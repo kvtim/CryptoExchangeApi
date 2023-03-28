@@ -27,6 +27,13 @@ namespace CurrencyManagement.Api.Controllers
             var currencies = await _currencyService.GetAllAsync();
             return Ok(_mapper.Map<IEnumerable<CurrencyDto>>(currencies));
         }
+        
+        [HttpGet("AllWithDimension")]
+        public async Task<IActionResult> GetAllWithDimension()
+        {
+            var currencies = await _currencyService.GetAllWithDimensionAsync();
+            return Ok(_mapper.Map<IEnumerable<CurrencyWithDimensionDto>>(currencies));
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -34,6 +41,15 @@ namespace CurrencyManagement.Api.Controllers
             var currency = await _currencyService.GetByIdAsync(id);
 
             return currency == null ? NotFound() : Ok(_mapper.Map<CurrencyDto>(currency));
+        }
+
+        [HttpGet("CurrencyWithDimension/{id}")]
+        public async Task<IActionResult> GetByIdlWithDimension(int id)
+        {
+            var currency = await _currencyService.GetByIdlWithDimensionAsync(id);
+
+            return currency == null ? NotFound() 
+                : Ok(_mapper.Map<CurrencyWithDimensionDto>(currency));
         }
 
         [HttpPost]

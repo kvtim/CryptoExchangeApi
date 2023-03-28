@@ -9,5 +9,8 @@ namespace CurrencyManagement.Data.Services
 {
     public interface ICurrencyService : IService<Currency>
     {
+        Task<IEnumerable<Currency>> GetAllWithDimensionAsync();
+        Task<Currency> GetByIdlWithDimensionAsync(int id);
+
     }
 }

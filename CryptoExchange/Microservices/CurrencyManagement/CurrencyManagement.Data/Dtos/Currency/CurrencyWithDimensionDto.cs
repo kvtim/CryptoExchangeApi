@@ -1,18 +1,18 @@
-﻿using System;
+﻿using CurrencyManagement.Data.Dtos.CurrencyDimension;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Core.Models
+namespace CurrencyManagement.Data.Dtos.Currency
 {
-    public class Currency
+    public class CurrencyWithDimensionDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }
         public decimal CurrentPriceInUSD { get; set; }
 
-        public List<CurrencyDimension>? CurrencyDimensions { get; set; }
-            = new List<CurrencyDimension>();
+        public List<CurrencyDimensionDto>? CurrencyDimensions { get; set; }
     }
 }
