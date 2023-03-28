@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CurrencyManagement.Core.Models;
 using CurrencyManagement.Data.Dtos.Currency;
+using CurrencyManagement.Data.Dtos.CurrencyDimension;
 
 namespace CurrencyManagement.Api.Mappings
 {
@@ -9,8 +10,11 @@ namespace CurrencyManagement.Api.Mappings
         public MapProfile()
         {
             CreateMap<Currency, CurrencyDto>().ReverseMap();
+            CreateMap<Currency, CurrencyWithDimensionDto>().ReverseMap();
             CreateMap<Currency, CreateCurrencyDto>().ReverseMap();
             CreateMap<Currency, UpdateCurrencyDto>().ReverseMap();
+
+            CreateMap<CurrencyDimension, CurrencyDimensionDto>().ReverseMap();
         }
     }
 }

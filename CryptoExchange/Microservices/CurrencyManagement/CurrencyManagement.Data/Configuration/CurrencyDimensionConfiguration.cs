@@ -14,7 +14,8 @@ namespace CurrencyManagement.Data.Configuration
         public void Configure(EntityTypeBuilder<CurrencyDimension> builder)
         {
             builder.HasOne(c => c.Currency)
-                .WithMany(cd => cd.CurrencyDimensions);
+                .WithMany(cd => cd.CurrencyDimensions)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(c => c.PriceInUSD)
                 .IsRequired();
