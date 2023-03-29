@@ -4,6 +4,7 @@ using CurrencyManagement.Data.Services;
 using CurrencyManagement.Data.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +50,6 @@ namespace CurrencyManagement.Services.Services
             return await _unitOfWork.CurrencyRepository.GetByIdAsync(id);
         }
 
-
         public async Task<Currency> GetByIdlWithDimensionAsync(int id)
         {
             return await _unitOfWork.CurrencyRepository.GetByIdWithDimensionAsync(id);
@@ -65,6 +65,24 @@ namespace CurrencyManagement.Services.Services
         {
             await _unitOfWork.CurrencyRepository.UpdateAsync(entity);
 
+            await _AddDimension(entity);
+
+            await _unitOfWork.CommitAsync();
+
+            return entity;
+        }
+
+        public async Task<Currency> UpdatePriceAsync(int id, decimal increasePrice)
+        {
+            var currency = await GetByIdAsync(id);
+
+            currency.CurrentPriceInUSD += increasePrice;
+
+            return await UpdateAsync(currency);
+        }
+
+        private async Task _AddDimension(Currency entity)
+        {
             var updatedEntity = await _unitOfWork.CurrencyRepository
                 .GetByIdWithDimensionAsync(entity.Id);
 
@@ -78,10 +96,6 @@ namespace CurrencyManagement.Services.Services
                     FromDate = DateTime.UtcNow,
                     PriceInUSD = entity.CurrentPriceInUSD
                 });
-
-            await _unitOfWork.CommitAsync();
-
-            return entity;
         }
     }
 }

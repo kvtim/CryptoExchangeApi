@@ -74,6 +74,24 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(updateCurrencyDto);
         }
 
+        [HttpPut("IncreasePrice/{id}")]
+        public async Task<IActionResult> IncreasePrice(int id, 
+            [FromBody] ChangeCurrencyPriceDto increasePrice)
+        {
+            var currency = await _currencyService.UpdatePriceAsync(id, increasePrice.PriceChange);
+
+            return currency == null ? BadRequest() : Ok(_mapper.Map<CurrencyDto>(currency));
+        }
+
+        [HttpPut("ReducePrice/{id}")]
+        public async Task<IActionResult> ReducePrice(int id,
+            [FromBody] ChangeCurrencyPriceDto reducePrice)
+        {
+            var currency = await _currencyService.UpdatePriceAsync(id, -reducePrice.PriceChange);
+            
+            return currency == null ? BadRequest() : Ok(_mapper.Map<CurrencyDto>(currency));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

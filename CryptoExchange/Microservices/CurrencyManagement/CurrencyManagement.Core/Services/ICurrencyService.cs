@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Data.Services
+namespace CurrencyManagement.Core.Services
 {
     public interface ICurrencyService : IService<Currency>
     {
