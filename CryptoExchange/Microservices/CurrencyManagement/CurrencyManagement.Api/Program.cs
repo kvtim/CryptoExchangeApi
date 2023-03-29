@@ -3,7 +3,7 @@ using CurrencyManagement.Core.UnitOfWork;
 using CurrencyManagement.Data.Repositories;
 using CurrencyManagement.Data.UnitOfWork;
 using CurrencyManagement.Data;
-using CurrencyManagement.Data.Services;
+using CurrencyManagement.Core.Services;
 using CurrencyManagement.Services.Services;
 using Microsoft.EntityFrameworkCore;
 

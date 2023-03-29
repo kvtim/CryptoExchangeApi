@@ -2,7 +2,7 @@
 using CurrencyManagement.Core.Models;
 using CurrencyManagement.Core.Repositories;
 using CurrencyManagement.Data.Dtos.Currency;
-using CurrencyManagement.Data.Services;
+using CurrencyManagement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 

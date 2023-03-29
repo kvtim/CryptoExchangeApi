@@ -1,6 +1,6 @@
 ﻿using CurrencyManagement.Core.Models;
 using CurrencyManagement.Core.UnitOfWork;
-using CurrencyManagement.Data.Services;
+using CurrencyManagement.Core.Services;
 using CurrencyManagement.Data.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -75,6 +75,9 @@ namespace CurrencyManagement.Services.Services
         public async Task<Currency> UpdatePriceAsync(int id, decimal increasePrice)
         {
             var currency = await GetByIdAsync(id);
+
+            if (currency == null || currency.CurrentPriceInUSD <= -increasePrice)
+                return null;
 
             currency.CurrentPriceInUSD += increasePrice;
 
