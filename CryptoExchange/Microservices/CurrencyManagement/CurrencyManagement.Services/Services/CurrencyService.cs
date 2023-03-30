@@ -76,8 +76,11 @@ namespace CurrencyManagement.Services.Services
         {
             var currency = await GetByIdAsync(id);
 
-            if (currency == null || currency.CurrentPriceInUSD <= -increasePrice)
-                return null;
+            if (currency == null)
+                throw new KeyNotFoundException("Currency not found");
+
+            if (currency.CurrentPriceInUSD <= -increasePrice)
+                throw new ArgumentException("Price can't be less than 0");
 
             currency.CurrentPriceInUSD += increasePrice;
 
@@ -88,6 +91,9 @@ namespace CurrencyManagement.Services.Services
         {
             var updatedEntity = await _unitOfWork.CurrencyRepository
                 .GetByIdWithDimensionAsync(entity.Id);
+
+            if (updatedEntity == null)
+                throw new KeyNotFoundException("Currency not found");
 
             var lastDim = updatedEntity.CurrencyDimensions.First(c => c.IsCurrent == true);
             lastDim.EndDate = DateTime.UtcNow;
