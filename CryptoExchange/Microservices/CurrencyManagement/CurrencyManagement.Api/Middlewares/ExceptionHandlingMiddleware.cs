@@ -1,4 +1,5 @@
 ﻿using CurrencyManagement.Data.Dtos.Error;
+using CurrencyManagement.Data.Exceptions;
 using System.Net;
 
 namespace CurrencyManagement.Api.Middlewares
@@ -26,6 +27,13 @@ namespace CurrencyManagement.Api.Middlewares
                     ex.Message,
                     HttpStatusCode.NotFound,
                     "Entity not found");
+            }
+            catch(CurrencyPriceLessThanZeroException ex)
+            {
+                await HandleExceptionAsync(httpContext,
+                    ex.Message,
+                    HttpStatusCode.BadRequest,
+                    "Currency price can't be less than 0");
             }
             catch(ArgumentException ex)
             {

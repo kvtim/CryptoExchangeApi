@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CurrencyManagement.Data.Exceptions;
 
 namespace CurrencyManagement.Services.Services
 {
@@ -80,7 +81,7 @@ namespace CurrencyManagement.Services.Services
                 throw new KeyNotFoundException("Currency not found");
 
             if (currency.CurrentPriceInUSD <= -increasePrice)
-                throw new ArgumentException("Price can't be less than 0");
+                throw new CurrencyPriceLessThanZeroException(currency.Name);
 
             currency.CurrentPriceInUSD += increasePrice;
 
