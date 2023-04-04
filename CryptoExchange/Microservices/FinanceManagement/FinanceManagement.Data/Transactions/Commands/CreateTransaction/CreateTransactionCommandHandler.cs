@@ -32,6 +32,9 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
             CreateTransactionCommand request,
             CancellationToken cancellationToken)
         {
+            if (request.Transaction.FromCurrencyId == request.Transaction.NewCurrencyId)
+                throw new Exception("Sending currency and new currency are the same");
+
             var newCurrencyPriceUSD = GetNewCurrencyPriceUSD(
                 request.Transaction.NewCurrencyAmount,
                 request.Transaction.NewCurrencyPricePerUnit);
@@ -93,7 +96,13 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
             if (rightNewUserCurrency != null)
             {
                 rightNewUserCurrency.CurrencyAmount += transaction.NewCurrencyAmount;
-                await _walletRepository.UpdateAsync(rightFromUserCurrency);
+
+                if (rightFromUserCurrency.CurrencyAmount == 0)
+                    await _walletRepository.RemoveAsync(rightFromUserCurrency);
+                else
+                    await _walletRepository.UpdateAsync(rightFromUserCurrency);
+
+                await _walletRepository.UpdateAsync(rightNewUserCurrency);
             }
             else
             {
