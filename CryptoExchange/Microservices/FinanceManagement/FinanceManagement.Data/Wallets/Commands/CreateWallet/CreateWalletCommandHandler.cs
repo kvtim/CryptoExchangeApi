@@ -25,6 +25,13 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
         public async Task<WalletDto> Handle(CreateWalletCommand request,
             CancellationToken cancellationToken)
         {
+            var wallet = await _repository.GetWalletByUserAndCurrencyAsync(
+                request.Wallet.UserId,
+                request.Wallet.CurrencyId);
+
+            if (wallet != null)
+                throw new Exception("Wallet already exists");
+
             await _repository.AddAsync(request.Wallet);
             await _repository.SaveChangesAsync();
 

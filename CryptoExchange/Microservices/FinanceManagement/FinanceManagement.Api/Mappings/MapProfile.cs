@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FinanceManagement.Core.Dtos.Transaction;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.Models;
 using System;
@@ -16,6 +17,10 @@ namespace FinanceManagement.Api.Mappings
             CreateMap<Wallet, WalletDto>().ReverseMap();
             CreateMap<Wallet, CreateWalletDto>().ReverseMap();
             CreateMap<Wallet, UpdateWalletDto>().ReverseMap();
+
+            CreateMap<Transaction, TransactionDto>().ReverseMap();
+            CreateMap<Transaction, CreateTransactionDto>().ReverseMap();
+            CreateMap<Transaction, UpdateTransactionDto>().ReverseMap();
         }
     }
 }

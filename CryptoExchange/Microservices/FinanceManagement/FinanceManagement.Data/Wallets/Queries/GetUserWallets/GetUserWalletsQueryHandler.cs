@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Wallets.Queries.GetUserWallets
 {
-    public class GerUserWalletsQueryHandler :
+    public class GetUserWalletsQueryHandler :
         IRequestHandler<GetUserWalletsQuery, IEnumerable<WalletDto>>
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
 
-        public GerUserWalletsQueryHandler(IWalletRepository repository, IMapper mapper)
+        public GetUserWalletsQueryHandler(IWalletRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Core.Repositories
 {
-    public interface IWalletRepository : IRepository<Wallet>
+    public interface ITransactionRepository : IRepository<Transaction>
     {
-        Task<IEnumerable<Wallet>> GetUserWalletsAsync(int userId);
-        Task<Wallet> GetWalletByUserAndCurrencyAsync(int userId, int currencyId);
+        Task<IEnumerable<Transaction>> GetUserTransactionsAsync(int userId);
     }
 }

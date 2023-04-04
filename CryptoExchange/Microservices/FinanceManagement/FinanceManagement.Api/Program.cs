@@ -7,6 +7,8 @@ using FinanceManagement.Data.Wallets.Commands.CreateWallet;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data.Repositories;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +22,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 builder.Services.AddMediatR(
     cfg => cfg.RegisterServicesFromAssembly(typeof(CreateWalletCommand).Assembly));

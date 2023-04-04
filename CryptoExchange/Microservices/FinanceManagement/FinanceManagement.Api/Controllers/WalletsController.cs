@@ -41,7 +41,7 @@ namespace FinanceManagement.Api.Controllers
             return Ok(wallets);
         }
 
-        [HttpGet("GetUserWallets/{userId}")]
+        [HttpGet("GetUserCurrencies/{userId}")]
         public async Task<IActionResult> GetUserWallets(int userId)
         {
             var wallets = await _mediator.Send(new GetUserWalletsQuery() { UserId = userId });

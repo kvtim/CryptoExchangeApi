@@ -1,14 +1,15 @@
-﻿using System;
+﻿using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceManagement.Core.Models
+namespace FinanceManagement.Core.Dtos.Transaction
 {
-    public class Transaction
+    public class CreateTransactionDto
     {
-        public int Id { get; set; }
         public int NewCurrencyId { get; set; }
         public int UserId { get; set; }
 
@@ -17,9 +18,5 @@ namespace FinanceManagement.Core.Models
 
         public decimal NewCurrencyAmount { get; set; }
         public decimal NewCurrencyPricePerUnit { get; set; }
-
-        public decimal FullTransactionPriceUSD { get; set; }
-
-        public DateTime TransactionDate { get; set; } = DateTime.Now;
     }
 }

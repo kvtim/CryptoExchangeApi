@@ -3,6 +3,7 @@ using System;
 using FinanceManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinanceManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230404131156_Add_from_currency_field")]
+    partial class Add_from_currency_field
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,28 +33,22 @@ namespace FinanceManagement.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("CurrencyAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("CurrencyId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("FromCurrencyId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("FromCurrencyPricePerUnit")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("FullTransactionPriceUSD")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("NewCurrencyAmount")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("NewCurrencyId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("NewCurrencyPricePerUnit")
+                    b.Property<decimal>("PriceUSD")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("TransactionDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasDefaultValue(new DateTime(2023, 4, 4, 17, 35, 20, 544, DateTimeKind.Local).AddTicks(545));
+                        .HasDefaultValue(new DateTime(2023, 4, 4, 16, 11, 55, 973, DateTimeKind.Local).AddTicks(4592));
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");

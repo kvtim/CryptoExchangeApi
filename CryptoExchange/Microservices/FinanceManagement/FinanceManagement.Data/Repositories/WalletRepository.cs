@@ -21,5 +21,12 @@ namespace FinanceManagement.Data.Repositories
             return await _dbContext.Wallets.Where(w => w.UserId == userId)
                 .ToListAsync();
         }
+
+        public async Task<Wallet> GetWalletByUserAndCurrencyAsync(int userId, int currencyId)
+        {
+            return await _dbContext.Wallets.FirstOrDefaultAsync(w =>
+            w.UserId == userId &&
+            w.CurrencyId == currencyId);
+        }
     }
 }
