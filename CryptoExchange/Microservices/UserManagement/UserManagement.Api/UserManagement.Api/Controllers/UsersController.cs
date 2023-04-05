@@ -75,14 +75,12 @@ namespace UserManagement.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto updateUserDto)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null) return BadRequest("User not found");
+            var user = await _userService.GetCheckedUser(
+                id,
+                User.IsInRole("Admin"),
+                User.Identity.Name);
 
-            if (User.IsInRole("User") && user.UserName != User.Identity.Name)
-                return BadRequest();
-
-            user.FirstName = updateUserDto.FirstName;
-            user.LastName = updateUserDto.LastName;
+            user = _userService.SetPropertiesForUpdate(user, updateUserDto);
 
             var updatedUser = await _userService.UpdateAsync(user);
 
@@ -102,11 +100,10 @@ namespace UserManagement.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null) return BadRequest("User not found");
-
-            if (User.IsInRole("User") && user.UserName != User.Identity.Name)
-                return BadRequest();
+            var user = await _userService.GetCheckedUser(
+                id,
+                User.IsInRole("Admin"),
+                User.Identity.Name);
 
             await _userService.RemoveAsync(user);
             return Ok();

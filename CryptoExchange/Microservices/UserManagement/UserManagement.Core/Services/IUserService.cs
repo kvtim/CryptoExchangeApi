@@ -12,5 +12,7 @@ namespace UserManagement.Core.Services
     {
         Task<User> GetByUserNameAsync(string userName);
         Task<User> ChangePassword(string userName, ChangePasswordDto changePasswordDto);
+        User SetPropertiesForUpdate(User user, UpdateUserDto userDto);
+        Task<User> GetCheckedUser(int id, bool isUserAdmin, string userName);
     }
 }

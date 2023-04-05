@@ -71,5 +71,32 @@ namespace UserManagement.Services.Services
 
             return await UpdateAsync(user);
         }
+
+        public async Task<User> GetCheckedUser(
+            int id,
+            bool isUserAdmin,
+            string userName)
+        {
+            var user = await GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+
+            if (!isUserAdmin && user.UserName != userName)
+            {
+                throw new Exception("It isn't you");
+            }
+
+            return user;
+        }
+
+        public User SetPropertiesForUpdate(User user, UpdateUserDto userDto)
+        {
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+
+            return user;
+        }
     }
 }
