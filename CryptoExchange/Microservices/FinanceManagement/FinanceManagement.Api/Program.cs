@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using FinanceManagement.Data.Wallets.Commands.CreateWallet;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data.Repositories;
+using FinanceManagement.Api.ExtensionMethods;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -24,13 +25,9 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-builder.Services.AddMediatR(
-    cfg => cfg.RegisterServicesFromAssembly(typeof(CreateWalletCommand).Assembly));
+builder.Services.AddMediatrWithConfiguration();
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+builder.Services.AddControllersWithJsonConfiguration();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
