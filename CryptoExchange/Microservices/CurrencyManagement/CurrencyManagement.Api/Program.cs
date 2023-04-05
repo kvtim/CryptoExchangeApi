@@ -7,6 +7,7 @@ using CurrencyManagement.Core.Services;
 using CurrencyManagement.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using CurrencyManagement.Api.Middlewares;
+using CurrencyManagement.Api.ExtensionMethods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,10 +28,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+builder.Services.AddControllersWithJsonConfiguration();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
