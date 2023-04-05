@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Core.Repositories
+namespace CurrencyManagement.Core.Services
 {
-    public interface ICurrencyRepository : IRepository<Currency>
+    public interface ICurrencyService : IService<Currency>
     {
-        Task<Currency> GetByIdWithDimensionAsync(int id);
         Task<IEnumerable<Currency>> GetAllWithDimensionAsync();
+        Task<Currency> GetByIdlWithDimensionAsync(int id);
+        Task<Currency> UpdatePriceAsync(int id, decimal increasePrice);
     }
 }

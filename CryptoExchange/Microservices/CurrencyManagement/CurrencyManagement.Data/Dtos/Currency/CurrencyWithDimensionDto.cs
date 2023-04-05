@@ -1,4 +1,4 @@
-﻿using CurrencyManagement.Data.Validation;
+﻿using CurrencyManagement.Data.Dtos.CurrencyDimension;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace CurrencyManagement.Data.Dtos.Currency
 {
-    public class UpdateCurrencyDto
+    public class CurrencyWithDimensionDto
     {
-        [MinLength(3), MaxLength(128)]
+        public int Id { get; set; }
         public string? Name { get; set; }
-        [PriceValidationAttribute]
         public decimal CurrentPriceInUSD { get; set; }
+
+        public List<CurrencyDimensionDto>? CurrencyDimensions { get; set; }
     }
 }

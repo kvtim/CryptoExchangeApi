@@ -2,9 +2,8 @@
 using CurrencyManagement.Core.Models;
 using CurrencyManagement.Core.Repositories;
 using CurrencyManagement.Data.Dtos.Currency;
-using CurrencyManagement.Data.Services;
+using CurrencyManagement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace CurrencyManagement.Api.Controllers
 {
@@ -28,12 +27,33 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(_mapper.Map<IEnumerable<CurrencyDto>>(currencies));
         }
 
+        [HttpGet("AllWithDimension")]
+        public async Task<IActionResult> GetAllWithDimension()
+        {
+            var currencies = await _currencyService.GetAllWithDimensionAsync();
+            return Ok(_mapper.Map<IEnumerable<CurrencyWithDimensionDto>>(currencies));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var currency = await _currencyService.GetByIdAsync(id);
 
-            return currency == null ? NotFound() : Ok(_mapper.Map<CurrencyDto>(currency));
+            if (currency == null)
+                throw new KeyNotFoundException("Currency not found");
+
+            return Ok(_mapper.Map<CurrencyDto>(currency));
+        }
+
+        [HttpGet("CurrencyWithDimension/{id}")]
+        public async Task<IActionResult> GetByIdlWithDimension(int id)
+        {
+            var currency = await _currencyService.GetByIdlWithDimensionAsync(id);
+
+            if (currency == null)
+                throw new KeyNotFoundException("Currency not found");
+
+            return Ok(_mapper.Map<CurrencyWithDimensionDto>(currency));
         }
 
         [HttpPost]
@@ -43,8 +63,7 @@ namespace CurrencyManagement.Api.Controllers
 
             var currencyResult = await _currencyService.AddAsync(currency);
 
-            return currency == null ? BadRequest() : Ok(_mapper.Map<CurrencyDto>(currencyResult));
-
+            return Ok(_mapper.Map<CurrencyDto>(currencyResult));
         }
 
         [HttpPut("{id}")]
@@ -58,12 +77,31 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(updateCurrencyDto);
         }
 
+        [HttpPut("IncreasePrice/{id}")]
+        public async Task<IActionResult> IncreasePrice(int id,
+            [FromBody] ChangeCurrencyPriceDto increasePrice)
+        {
+            var currency = await _currencyService.UpdatePriceAsync(id, increasePrice.PriceChange);
+
+            return Ok(_mapper.Map<CurrencyDto>(currency));
+        }
+
+        [HttpPut("ReducePrice/{id}")]
+        public async Task<IActionResult> ReducePrice(int id,
+            [FromBody] ChangeCurrencyPriceDto reducePrice)
+        {
+            var currency = await _currencyService.UpdatePriceAsync(id, -reducePrice.PriceChange);
+
+            return Ok(_mapper.Map<CurrencyDto>(currency));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var currency = await _currencyService.GetByIdAsync(id);
 
-            if (currency == null) return BadRequest("Currency not found");
+            if (currency == null)
+                throw new KeyNotFoundException("Currency not found");
 
             await _currencyService.RemoveAsync(currency);
             return Ok();

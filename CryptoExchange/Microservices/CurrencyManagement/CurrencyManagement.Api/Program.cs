@@ -3,9 +3,10 @@ using CurrencyManagement.Core.UnitOfWork;
 using CurrencyManagement.Data.Repositories;
 using CurrencyManagement.Data.UnitOfWork;
 using CurrencyManagement.Data;
-using CurrencyManagement.Data.Services;
+using CurrencyManagement.Core.Services;
 using CurrencyManagement.Services.Services;
 using Microsoft.EntityFrameworkCore;
+using CurrencyManagement.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
