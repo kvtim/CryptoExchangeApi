@@ -3,13 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagement.Core.Exceptions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace UserManagement.Core.ErrorHandling
 {
     public abstract class ResultBase
     {
         public bool Succeeded { get; }
-        public Error Error;
+        private Error _error;
+        public Error Error {
+            get
+            {
+                if(Succeeded)
+                {
+                    throw new ResultException(
+                        "You attempted to access the ErrorMessage property" +
+                        "for a successful result. A successful result has no ErrorMessage.");
+                }
+
+                return _error;
+            }
+            private set
+            {
+                _error = value;
+            }
+        }
+
         protected internal ResultBase(bool succeeded, Error error)
         {
             Succeeded = succeeded;

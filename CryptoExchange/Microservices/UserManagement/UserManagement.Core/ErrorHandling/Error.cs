@@ -8,8 +8,8 @@ namespace UserManagement.Core.ErrorHandling
 {
     public class Error
     {
-        public ErrorType Type;
-        public string Message;
+        public ErrorType Type { get; set; }
+        public string Message { get; set; }
 
         public Error(ErrorType errorType, string message)
         {

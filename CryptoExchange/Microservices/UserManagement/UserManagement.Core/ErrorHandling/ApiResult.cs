@@ -6,18 +6,37 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagement.Core.Exceptions;
 
 namespace UserManagement.Core.ErrorHandling
 {
     public abstract class ApiResultBase
     {
         public readonly bool isSuccess;
-        public readonly Error error;
+        private Error _error;
+        public Error Error
+        {
+            get
+            {
+                if (isSuccess)
+                {
+                    throw new ResultException(
+                        "You attempted to access the ErrorMessage property" +
+                        "for a successful result. A successful result has no ErrorMessage.");
+                }
+
+                return _error;
+            }
+            private set
+            {
+                _error = value;
+            }
+        }
 
         protected internal ApiResultBase(bool isSuccess, Error error)
         {
             this.isSuccess = isSuccess;
-            this.error = error;
+            Error = error;
         }
     }
 
@@ -53,9 +72,9 @@ namespace UserManagement.Core.ErrorHandling
         {
             if (!isSuccess)
             {
-                return new ObjectResult(error.Message)
+                return new ObjectResult(Error.Message)
                 {
-                    StatusCode = (int)error.Type
+                    StatusCode = (int)Error.Type
                 };
             }
 
@@ -81,9 +100,9 @@ namespace UserManagement.Core.ErrorHandling
         {
             if (!isSuccess)
             {
-                return new ObjectResult(error.Message)
+                return new ObjectResult(Error.Message)
                 {
-                    StatusCode = (int)error.Type
+                    StatusCode = (int)Error.Type
                 };
             }
 
@@ -108,7 +127,7 @@ namespace UserManagement.Core.ErrorHandling
                     nameof(result));
             }
 
-            return new ApiResult<T>(default(Result<T>), false, result.error);
+            return new ApiResult<T>(default(Result<T>), false, result.Error);
         }
     }
 }
