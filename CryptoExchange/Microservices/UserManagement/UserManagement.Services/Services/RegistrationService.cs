@@ -9,6 +9,7 @@ using UserManagement.Core.Security;
 using UserManagement.Core.Services;
 using UserManagement.Core.UnitOfWork;
 using UserManagement.Core.Dtos.User;
+using UserManagement.Core.ErrorHandling;
 
 namespace UserManagement.Services.Services
 {
@@ -32,12 +33,14 @@ namespace UserManagement.Services.Services
             _mapper = mapper;
         }
 
-        public async Task<JWTToken> Registration(RegisterUserDto registerUserDto)
+        public async Task<Result<JWTToken>> Registration(RegisterUserDto registerUserDto)
         {
             var user = await _unitOfWork.UserRepository.GetByUserNameAsync(registerUserDto.UserName);
 
             if (user != null)
-                return null;
+            {
+                return Result.Failure(ErrorType.BadRequest, "User already exists");
+            }
 
             user = _mapper.Map<User>(registerUserDto);
             user.Password = _hasher.Hash(user.Password);
@@ -45,7 +48,7 @@ namespace UserManagement.Services.Services
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.CommitAsync();
 
-            return await _tokenService.CreateToken(user);
+            return Result.Ok(await _tokenService.CreateToken(user));
         }
     }
 }

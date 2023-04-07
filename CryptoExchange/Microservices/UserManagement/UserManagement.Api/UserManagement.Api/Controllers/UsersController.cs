@@ -6,6 +6,7 @@ using System.Data;
 using UserManagement.Core.Models;
 using UserManagement.Core.Services;
 using UserManagement.Core.Dtos.User;
+using UserManagement.Core.ErrorHandling;
 
 namespace UserManagement.Api.Controllers
 {
@@ -20,7 +21,7 @@ namespace UserManagement.Api.Controllers
         private readonly IMapper _mapper;
 
         public UsersController(
-            IUserService userService, 
+            IUserService userService,
             IAuthenticationService authenticationService,
             IRegistrationService registrationService,
             IMapper mapper)
@@ -33,80 +34,108 @@ namespace UserManagement.Api.Controllers
 
         [HttpPost("registration")]
         [AllowAnonymous]
-        public async Task<IActionResult> Registration([FromBody] RegisterUserDto registerUserDto)
+        public async Task<ApiResult<JWTToken>> Registration([FromBody] RegisterUserDto registerUserDto)
         {
-            var token = await _registrationService.Registration(registerUserDto);
+            var tokenResult = await _registrationService.Registration(registerUserDto);
 
-            if (token == null) return BadRequest("User already exists");
+            if (!tokenResult.Succeeded)
+            {
+                return ApiResult.Failure(tokenResult.Error);
+            }
 
-            return Ok(token);
+            return ApiResult.Ok(tokenResult);
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginUserDto loginUserDto)
+        public async Task<ApiResult<JWTToken>> Login([FromBody] LoginUserDto loginUserDto)
         {
-            var token = await _authenticationService
+            var tokenResult = await _authenticationService
                 .Authentication(loginUserDto);
 
-            if (token == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(token);
+            if (!tokenResult.Succeeded)
+            {
+                return ApiResult.Failure(tokenResult.Error);
+            }
+            return ApiResult.Ok(tokenResult);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAll()
+        public async Task<ApiResult<IEnumerable<UserDto>>> GetAll()
         {
-            var users = await _userService.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<UserDto>>(users));
+            var usersResult = await _userService.GetAllAsync();
+            if (!usersResult.Succeeded)
+            {
+                return ApiResult.Failure(usersResult.Error);
+            }
+
+            return ApiResult.Ok(_mapper.Map<IEnumerable<UserDto>>(usersResult.ValueOrDefault));
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<ApiResult<UserDetailsDto>> GetById(int id)
         {
-            var user = await _userService.GetByIdAsync(id);
+            var userResult = await _userService.GetByIdAsync(id);
 
-            return user == null ? NotFound() : Ok(_mapper.Map<UserDetailsDto>(user));
+            if (!userResult.Succeeded)
+            {
+                return ApiResult.Failure(userResult.Error);
+            }
+
+            return ApiResult.Ok(_mapper.Map<UserDetailsDto>(userResult.Value));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto updateUserDto)
+        public async Task<ApiResult<UserDto>> Update(int id, [FromBody] UpdateUserDto updateUserDto)
         {
-            var user = await _userService.GetCheckedUser(
+            var userResult = await _userService.GetCheckedUser(
                 id,
                 User.IsInRole("Admin"),
                 User.Identity.Name);
 
-            user = _userService.SetPropertiesForUpdate(user, updateUserDto);
+            if (!userResult.Succeeded)
+            {
+                return ApiResult.Failure(userResult.Error);
+            }
+
+            var user = _userService.SetPropertiesForUpdate(userResult.Value, updateUserDto);
 
             var updatedUser = await _userService.UpdateAsync(user);
 
-            return Ok(_mapper.Map<UserDto>(updatedUser));
+            return ApiResult.Ok(_mapper.Map<UserDto>(updatedUser));
         }
 
         [HttpPut("ChangePassword")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        public async Task<ApiResult<UserDto>> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
         {
-            var user = await _userService.ChangePassword(User.Identity.Name, changePasswordDto);
+            var userResult = await _userService.ChangePassword(User.Identity.Name, changePasswordDto);
 
-            if (user == null) return BadRequest("Wrong old password");
 
-            return Ok(_mapper.Map<UserDto>(user));
+            if (!userResult.Succeeded)
+            {
+                return ApiResult.Failure(userResult.Error);
+            }
+
+            return ApiResult.Ok(_mapper.Map<UserDto>(userResult.Value));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
-            var user = await _userService.GetCheckedUser(
+            var userResult = await _userService.GetCheckedUser(
                 id,
                 User.IsInRole("Admin"),
                 User.Identity.Name);
 
-            await _userService.RemoveAsync(user);
-            return Ok();
+            if (!userResult.Succeeded)
+            {
+                return ApiResult.Failure(userResult.Error);
+            }
+
+            await _userService.RemoveAsync(userResult.Value);
+            return ApiResult.Ok();
         }
     }
 }

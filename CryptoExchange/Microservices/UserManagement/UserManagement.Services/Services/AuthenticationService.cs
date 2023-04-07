@@ -8,6 +8,7 @@ using UserManagement.Core.Security;
 using UserManagement.Core.Services;
 using UserManagement.Core.UnitOfWork;
 using UserManagement.Core.Dtos.User;
+using UserManagement.Core.ErrorHandling;
 
 namespace UserManagement.Services.Services
 {
@@ -28,18 +29,22 @@ namespace UserManagement.Services.Services
             _hasher = hasher;
         }
 
-        public async Task<JWTToken> Authentication(LoginUserDto loginUserDto)
+        public async Task<Result<JWTToken>> Authentication(LoginUserDto loginUserDto)
         {
             User user = await _unitOfWork.UserRepository.GetByUserNameAsync(loginUserDto.UserName);
 
             if (user == null)
-                return null;
+            {
+                return Result.Failure(ErrorType.BadRequest, "Username is incorrect");
+            }
 
             bool confirmPassword = _hasher.Verify(loginUserDto.Password, user.Password);
             if (!confirmPassword)
-                return null;
+            {
+                return Result.Failure(ErrorType.BadRequest, "Password is incorrect");
+            }
 
-            return await _tokenService.CreateToken(user);
+            return Result.Ok(await _tokenService.CreateToken(user));
         }
     }
 }

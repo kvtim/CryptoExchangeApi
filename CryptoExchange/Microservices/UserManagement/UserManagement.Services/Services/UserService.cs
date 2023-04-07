@@ -8,6 +8,7 @@ using UserManagement.Core.Models;
 using UserManagement.Core.Security;
 using UserManagement.Core.Services;
 using UserManagement.Core.UnitOfWork;
+using UserManagement.Core.ErrorHandling;
 
 namespace UserManagement.Services.Services
 {
@@ -30,19 +31,36 @@ namespace UserManagement.Services.Services
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<Result<IEnumerable<User>>> GetAllAsync()
         {
-            return await _unitOfWork.UserRepository.GetAllAsync();
+            var users = await _unitOfWork.UserRepository.GetAllAsync();
+            if (users == null)
+            {
+                return Result.Failure(ErrorType.NotFound, "Users not found");
+            }
+            return Result.Ok(users);
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<Result<User>> GetByIdAsync(int id)
         {
-            return await _unitOfWork.UserRepository.GetByIdAsync(id);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                return Result.Failure(ErrorType.NotFound ,"User not found");
+            }
+            return Result.Ok(user);
         }
 
-        public async Task<User> GetByUserNameAsync(string userName)
+        public async Task<Result<User>> GetByUserNameAsync(string userName)
         {
-            return await _unitOfWork.UserRepository.GetByUserNameAsync(userName);
+            var user = await _unitOfWork.UserRepository.GetByUserNameAsync(userName);
+
+            if (user == null)
+            {
+                return Result.Failure(ErrorType.NotFound, "User not found");
+            }
+            return Result.Ok(user);
         }
 
         public async Task RemoveAsync(User entity)
@@ -59,36 +77,44 @@ namespace UserManagement.Services.Services
             return entity;
         }
 
-        public async Task<User> ChangePassword(string userName, ChangePasswordDto changePasswordDto)
+        public async Task<Result<User>> ChangePassword(string userName, ChangePasswordDto changePasswordDto)
         {
-            var user = await GetByUserNameAsync(userName);
+            var userResult = await GetByUserNameAsync(userName);
+            if (!userResult.Succeeded)
+            {
+                return userResult;
+            }
 
-            bool confirmPassword = _hasher.Verify(changePasswordDto.OldPassword, user.Password);
+            bool confirmPassword = _hasher.Verify(changePasswordDto.OldPassword, 
+                userResult.Value.Password);
+            
             if (!confirmPassword)
-                return null;
+            {
+                return Result.Failure(ErrorType.BadRequest ,"Wrong old password");
+            }
 
-            user.Password = _hasher.Hash(changePasswordDto.NewPassword);
+            userResult.Value.Password = _hasher.Hash(changePasswordDto.NewPassword);
 
-            return await UpdateAsync(user);
+            return Result.Ok(await UpdateAsync(userResult.Value));
         }
 
-        public async Task<User> GetCheckedUser(
+        public async Task<Result<User>> GetCheckedUser(
             int id,
             bool isUserAdmin,
             string userName)
         {
-            var user = await GetByIdAsync(id);
-            if (user == null)
+            var userResult = await GetByIdAsync(id);
+            if (!userResult.Succeeded)
             {
-                throw new KeyNotFoundException("User not found");
+                return userResult;
             }
 
-            if (!isUserAdmin && user.UserName != userName)
+            if (!isUserAdmin && userResult.Value.UserName != userName)
             {
-                throw new Exception("It isn't you");
+                return Result.Failure(ErrorType.BadRequest, "It isn't you");
             }
 
-            return user;
+            return userResult;
         }
 
         public User SetPropertiesForUpdate(User user, UpdateUserDto userDto)
