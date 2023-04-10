@@ -24,7 +24,7 @@ namespace UserManagement.Core.Validation
 
         private bool IsUsernameValid(string username)
         {
-            Regex regex = new Regex(@"^[A-z][A-z|\.]+$");
+            Regex regex = new Regex(@"^[A-z][A-z|0-9]{2,11}$");
             return regex.IsMatch(username);
         }
     }

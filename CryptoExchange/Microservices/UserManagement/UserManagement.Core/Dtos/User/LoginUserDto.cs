@@ -10,7 +10,6 @@ namespace UserManagement.Core.Dtos.User
 {
     public class LoginUserDto
     {
-        [MinLength(3), MaxLength(32)]
         [UsernameValidation]
         public required string? UserName { get; set; }
 

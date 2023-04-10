@@ -16,7 +16,7 @@ namespace UserManagement.Core.Validation
 
             if (!IsPasswordValid(password))
             {
-                return new ValidationResult("Value isn't valid");
+                return new ValidationResult("Password isn't valid");
             }
 
             return ValidationResult.Success;
@@ -24,7 +24,7 @@ namespace UserManagement.Core.Validation
 
         private bool IsPasswordValid(string password)
         {
-            Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$");
+            Regex regex = new Regex(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,50}$");
             return regex.IsMatch(password);
         }
     }
