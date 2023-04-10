@@ -4,14 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserManagement.Core.Validation;
 
 namespace UserManagement.Core.Dtos.User
 {
     public class ChangePasswordDto
     {
-        [MinLength(6), MaxLength(127)]
+        [PasswordValidation]
         public required string? OldPassword { get; set; }
-        [MinLength(6), MaxLength(127)]
+
+        [PasswordValidation]
         public required string NewPassword { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace UserManagement.Core.Dtos.User
         [UsernameValidation]
         public required string? UserName { get; set; }
 
-        [MinLength(6), MaxLength(127)]
+        [PasswordValidation]
         public required string? Password { get; set; }
     }
 }
