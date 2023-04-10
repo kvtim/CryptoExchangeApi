@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Transaction;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
 using MediatR;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
 {
     public class CreateTransactionCommandHandler
-        : IRequestHandler<CreateTransactionCommand, TransactionDto>
+        : IRequestHandler<CreateTransactionCommand, Result<TransactionDto>>
     {
         private readonly ITransactionRepository _repository;
         private readonly IWalletRepository _walletRepository;
@@ -28,12 +29,16 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
             _mapper = mapper;
         }
 
-        public async Task<TransactionDto> Handle(
+        public async Task<Result<TransactionDto>> Handle(
             CreateTransactionCommand request,
             CancellationToken cancellationToken)
         {
             if (request.Transaction.FromCurrencyId == request.Transaction.NewCurrencyId)
-                throw new Exception("Sending currency and new currency are the same");
+            {
+                return Result.Failure(
+                    ErrorType.BadRequest,
+                    "Sending currency and new currency are the same");
+            }
 
             var newCurrencyPriceUSD = GetNewCurrencyPriceUSD(
                 request.Transaction.NewCurrencyAmount,
@@ -48,17 +53,24 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
                 request.Transaction.FromCurrencyId);
 
             if (rightFromCurrency == null)
-                throw new Exception("You haven't this currency");
+            {
+                return Result.Failure(ErrorType.BadRequest, "You haven't this currency");
+            }
 
             var rightNewCurrency = await _walletRepository.GetWalletByUserAndCurrencyAsync(
                 request.Transaction.UserId,
                 request.Transaction.NewCurrencyId);
 
-            await UpdateUserWallet(
+            var updateResult = await UpdateUserWallet(
                 request.Transaction,
                 rightFromCurrency,
                 rightNewCurrency,
                 rightFromCurrencyAmount);
+
+            if (!updateResult.Succeeded)
+            {
+                return updateResult;
+            }
 
 
             request.Transaction.FullTransactionPriceUSD = newCurrencyPriceUSD;
@@ -66,7 +78,7 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
             await _repository.AddAsync(request.Transaction);
             await _repository.SaveChangesAsync();
 
-            return _mapper.Map<TransactionDto>(request.Transaction);
+            return Result.Ok(_mapper.Map<TransactionDto>(request.Transaction));
         }
 
 
@@ -82,14 +94,16 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
             newCurrencyPriceUSD / fromCurrencyPricePerUnit;
 
 
-        private async Task UpdateUserWallet(
+        private async Task<Result> UpdateUserWallet(
             Transaction transaction,
             Wallet rightFromUserCurrency,
             Wallet rightNewUserCurrency,
             decimal rightFromCurrencyAmount)
         {
             if (rightFromUserCurrency.CurrencyAmount <= rightFromCurrencyAmount)
-                throw new Exception("You haven't money for transaction");
+            {
+                return Result.Failure(ErrorType.BadRequest, "You haven't money for transaction");
+            }
 
             rightFromUserCurrency.CurrencyAmount -= rightFromCurrencyAmount;
 
@@ -98,9 +112,13 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
                 rightNewUserCurrency.CurrencyAmount += transaction.NewCurrencyAmount;
 
                 if (rightFromUserCurrency.CurrencyAmount == 0)
+                {
                     await _walletRepository.RemoveAsync(rightFromUserCurrency);
+                }
                 else
+                {
                     await _walletRepository.UpdateAsync(rightFromUserCurrency);
+                }
 
                 await _walletRepository.UpdateAsync(rightNewUserCurrency);
             }
@@ -115,6 +133,8 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
 
                 await _walletRepository.AddAsync(rightNewUserCurrency);
             }
+            
+            return Result.Ok();
         }
     }
 }

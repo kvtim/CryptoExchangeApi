@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data.Wallets.Queries.GetWalletList;
 using MediatR;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 namespace FinanceManagement.Data.Wallets.Queries.GetUserWallets
 {
     public class GetUserWalletsQueryHandler :
-        IRequestHandler<GetUserWalletsQuery, IEnumerable<WalletDto>>
+        IRequestHandler<GetUserWalletsQuery, Result<IEnumerable<WalletDto>>>
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
@@ -24,11 +25,16 @@ namespace FinanceManagement.Data.Wallets.Queries.GetUserWallets
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<WalletDto>> Handle(GetUserWalletsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<WalletDto>>> Handle(GetUserWalletsQuery request, CancellationToken cancellationToken)
         {
             var wallets = await _repository.GetUserWalletsAsync(request.UserId);
 
-            return _mapper.Map<IEnumerable<WalletDto>>(wallets);
+            if (!wallets.Any())
+            {
+                return Result.Failure(ErrorType.NotFound, "Wallets not found");
+            }
+
+            return Result.Ok(_mapper.Map<IEnumerable<WalletDto>>(wallets));
         }
     }
 }

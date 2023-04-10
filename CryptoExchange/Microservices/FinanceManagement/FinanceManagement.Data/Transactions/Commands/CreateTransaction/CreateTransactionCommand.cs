@@ -1,4 +1,5 @@
 ﻿using FinanceManagement.Core.Dtos.Transaction;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
 using MediatR;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
 {
-    public class CreateTransactionCommand : IRequest<TransactionDto>
+    public class CreateTransactionCommand : IRequest<Result<TransactionDto>>
     {
         public Transaction Transaction { get; set; }
     }

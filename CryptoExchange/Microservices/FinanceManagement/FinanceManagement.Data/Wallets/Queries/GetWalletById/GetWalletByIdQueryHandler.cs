@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Repositories;
 using MediatR;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace FinanceManagement.Data.Wallets.Queries.GetWalletById
 {
     public class GetWalletByIdQueryHandler :
-        IRequestHandler<GetWalletByIdQuery, WalletDto>
+        IRequestHandler<GetWalletByIdQuery, Result<WalletDto>>
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
@@ -22,11 +23,16 @@ namespace FinanceManagement.Data.Wallets.Queries.GetWalletById
             _mapper = mapper;
         }
 
-        public async Task<WalletDto> Handle(GetWalletByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<WalletDto>> Handle(GetWalletByIdQuery request, CancellationToken cancellationToken)
         {
             var wallet = await _repository.GetByIdAsync(request.Id);
 
-            return _mapper.Map<WalletDto>(wallet);
+            if (wallet == null)
+            {
+                return Result.Failure(ErrorType.NotFound, "Wallet not found");
+            }
+
+            return Result.Ok(_mapper.Map<WalletDto>(wallet));
         }
     }
 }

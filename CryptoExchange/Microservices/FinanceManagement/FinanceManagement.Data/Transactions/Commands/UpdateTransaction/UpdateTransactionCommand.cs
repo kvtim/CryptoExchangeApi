@@ -1,4 +1,5 @@
 ﻿using FinanceManagement.Core.Dtos.Transaction;
+using FinanceManagement.Core.ErrorHandling;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Transactions.Commands.UpdateTransaction
 {
-    public class UpdateTransactionCommand : IRequest<TransactionDto>
+    public class UpdateTransactionCommand : IRequest<Result<TransactionDto>>
     {
         public int Id { get; set; }
 

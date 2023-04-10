@@ -1,4 +1,5 @@
 ﻿using FinanceManagement.Core.Dtos.Transaction;
+using FinanceManagement.Core.ErrorHandling;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Transactions.Queries.GetAllTransactions
 {
-    public class GetAllTransactionsQuery : IRequest<IEnumerable<TransactionDto>>
+    public class GetAllTransactionsQuery : IRequest<Result<IEnumerable<TransactionDto>>>
     {
     }
 }

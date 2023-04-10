@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Transaction;
 using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Repositories;
 using MediatR;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace FinanceManagement.Data.Transactions.Queries.GetAllTransactions
 {
     public class GetAllTransactionsQueryHandler
-        : IRequestHandler<GetAllTransactionsQuery, IEnumerable<TransactionDto>>
+        : IRequestHandler<GetAllTransactionsQuery, Result<IEnumerable<TransactionDto>>>
     {
         private readonly ITransactionRepository _repository;
         private readonly IMapper _mapper;
@@ -23,11 +24,17 @@ namespace FinanceManagement.Data.Transactions.Queries.GetAllTransactions
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TransactionDto>> Handle(GetAllTransactionsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<TransactionDto>>> Handle(
+            GetAllTransactionsQuery request, CancellationToken cancellationToken)
         {
             var transactions = await _repository.GetAllAsync();
 
-            return _mapper.Map<IEnumerable<TransactionDto>>(transactions);
+            if (!transactions.Any())
+            {
+                return Result.Failure(ErrorType.NotFound, "Transactions not found");
+            }
+
+            return Result.Ok(_mapper.Map<IEnumerable<TransactionDto>>(transactions));
         }
     }
 }

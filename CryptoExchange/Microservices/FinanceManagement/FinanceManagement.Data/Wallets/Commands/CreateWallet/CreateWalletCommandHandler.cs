@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
 {
-    public class CreateWalletCommandHandler : IRequestHandler<CreateWalletCommand, WalletDto>
+    public class CreateWalletCommandHandler : IRequestHandler<CreateWalletCommand, Result<WalletDto>>
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
@@ -22,7 +23,7 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
             _mapper = mapper;
         }
 
-        public async Task<WalletDto> Handle(CreateWalletCommand request,
+        public async Task<Result<WalletDto>> Handle(CreateWalletCommand request,
             CancellationToken cancellationToken)
         {
             var wallet = await _repository.GetWalletByUserAndCurrencyAsync(
@@ -30,12 +31,14 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
                 request.Wallet.CurrencyId);
 
             if (wallet != null)
-                throw new Exception("Wallet already exists");
+            {
+                return Result.Failure(ErrorType.BadRequest, "Wallet already exists");
+            }
 
             await _repository.AddAsync(request.Wallet);
             await _repository.SaveChangesAsync();
 
-            return _mapper.Map<WalletDto>(request.Wallet);
+            return Result.Ok(_mapper.Map<WalletDto>(request.Wallet));
         }
     }
 }

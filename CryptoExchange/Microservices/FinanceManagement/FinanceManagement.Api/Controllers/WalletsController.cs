@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Data.Wallets.Commands.CreateWallet;
 using FinanceManagement.Data.Wallets.Commands.DeleteWallet;
@@ -26,57 +27,88 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllWallets()
+        public async Task<ApiResult<IEnumerable<WalletDto>>> GetAllWallets()
         {
-            var wallets = await _mediator.Send(new GetAllWalletsQuery());
+            var walletsResult = await _mediator.Send(new GetAllWalletsQuery());
 
-            return Ok(wallets);
+            if (!walletsResult.Succeeded)
+            {
+                return ApiResult.Failure(walletsResult.Error);
+            }
+
+            return ApiResult.Ok(walletsResult);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetWalletById(int id)
+        public async Task<ApiResult<WalletDto>> GetWalletById(int id)
         {
-            var wallets = await _mediator.Send(new GetWalletByIdQuery() { Id = id });
+            var walletResult = await _mediator.Send(new GetWalletByIdQuery() { Id = id });
 
-            return Ok(wallets);
+            if (!walletResult.Succeeded)
+            {
+                return ApiResult.Failure(walletResult.Error);
+            }
+
+            return ApiResult.Ok(walletResult);
         }
 
         [HttpGet("GetUserCurrencies/{userId}")]
-        public async Task<IActionResult> GetUserWallets(int userId)
+        public async Task<ApiResult<IEnumerable<WalletDto>>> GetUserWallets(int userId)
         {
-            var wallets = await _mediator.Send(new GetUserWalletsQuery() { UserId = userId });
+            var walletsResult = await _mediator.Send(new GetUserWalletsQuery() { UserId = userId });
 
-            return Ok(wallets);
+            if (!walletsResult.Succeeded)
+            {
+                return ApiResult.Failure(walletsResult.Error);
+            }
+
+            return ApiResult.Ok(walletsResult);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateWalletDto createWalletDto)
+        public async Task<ApiResult<WalletDto>> Add([FromBody] CreateWalletDto createWalletDto)
         {
-            var wallet = await _mediator.Send(new CreateWalletCommand()
+            var walletResult = await _mediator.Send(new CreateWalletCommand()
             {
                 Wallet = _mapper.Map<Wallet>(createWalletDto)
             });
 
-            return Ok(wallet);
+            if (!walletResult.Succeeded)
+            {
+                return ApiResult.Failure(walletResult.Error);
+            }
+
+            return ApiResult.Ok(walletResult);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateWalletDto updateWalletDto)
+        public async Task<ApiResult<WalletDto>> Update(int id, [FromBody] UpdateWalletDto updateWalletDto)
         {
-            var wallet = await _mediator.Send(new UpdateWalletCommand()
+            var walletResult = await _mediator.Send(new UpdateWalletCommand()
             {
                 Id = id,
                 CurrencyAmount = updateWalletDto.CurrencyAmount
             });
 
-            return Ok(wallet);
+            if (!walletResult.Succeeded)
+            {
+                return ApiResult.Failure(walletResult.Error);
+            }
+
+            return ApiResult.Ok(walletResult);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
-            await _mediator.Send(new DeleteWalletCommand() { Id = id });
-            return Ok();
+            var walletResult =  await _mediator.Send(new DeleteWalletCommand() { Id = id });
+
+            if (!walletResult.Succeeded)
+            {
+                return ApiResult.Failure(walletResult.Error);
+            }
+
+            return ApiResult.Ok();
         }
     }
 }

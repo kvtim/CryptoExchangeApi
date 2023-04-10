@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Transaction;
 using FinanceManagement.Core.Dtos.Wallet;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Data.Transactions.Commands.CreateTransaction;
 using FinanceManagement.Data.Transactions.Commands.DeleteTransaction;
@@ -17,6 +18,7 @@ using FinanceManagement.Data.Wallets.Queries.GetWalletList;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace FinanceManagement.Api.Controllers
 {
@@ -34,59 +36,89 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTransactions()
+        public async Task<ApiResult<IEnumerable<TransactionDto>>> GetAllTransactions()
         {
-            var transactions = await _mediator.Send(new GetAllTransactionsQuery());
+            var transactionsResult = await _mediator.Send(new GetAllTransactionsQuery());
 
-            return Ok(transactions);
+            if (!transactionsResult.Succeeded)
+            {
+                return ApiResult.Failure(transactionsResult.Error);
+            }
+
+            return ApiResult.Ok(transactionsResult);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTransactionById(int id)
+        public async Task<ApiResult<TransactionDto>> GetTransactionById(int id)
         {
-            var transactions = await _mediator.Send(new GetTransactionByIdQuery() { Id = id });
+            var transactionResult = await _mediator.Send(new GetTransactionByIdQuery() { Id = id });
 
-            return Ok(transactions);
+            if (!transactionResult.Succeeded)
+            {
+                return ApiResult.Failure(transactionResult.Error);
+            }
+
+            return ApiResult.Ok(transactionResult);
         }
 
         [HttpGet("GetUserTransactions/{userId}")]
-        public async Task<IActionResult> GetUserTransactions(int userId)
+        public async Task<ApiResult<IEnumerable<TransactionDto>>> GetUserTransactions(int userId)
         {
-            var transactions = await _mediator.Send(new GetUserTransactionsQuery() { UserId = userId });
+            var transactionsResult = await _mediator.Send(new GetUserTransactionsQuery() { UserId = userId });
 
-            return Ok(transactions);
+            if (!transactionsResult.Succeeded)
+            {
+                return ApiResult.Failure(transactionsResult.Error);
+            }
+            return ApiResult.Ok(transactionsResult);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CreateTransactionDto createTransactionDto)
+        public async Task<ApiResult<TransactionDto>> Add(
+            [FromBody] CreateTransactionDto createTransactionDto)
         {
-            var transaction = await _mediator.Send(new CreateTransactionCommand()
+            var transactionResult = await _mediator.Send(new CreateTransactionCommand()
             {
                 Transaction = _mapper.Map<Transaction>(createTransactionDto)
             });
 
-            return Ok(transaction);
+            if (!transactionResult.Succeeded)
+            {
+                return ApiResult.Failure(transactionResult.Error);
+            }
+
+            return ApiResult.Ok(transactionResult);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id,
+        public async Task<ApiResult<TransactionDto>> Update(int id,
             [FromBody] UpdateTransactionDto updateTransactionDto)
         {
-            var transaction = await _mediator.Send(new UpdateTransactionCommand()
+            var transactionResult = await _mediator.Send(new UpdateTransactionCommand()
             {
                 Id = id,
                 NewCurrencyAmount = updateTransactionDto.NewCurrencyAmount,
                 FullTransactionPriceUSD = updateTransactionDto.FullTransactionPriceUSD,
             });
 
-            return Ok(transaction);
+            if (!transactionResult.Succeeded)
+            {
+                return ApiResult.Failure(transactionResult.Error);
+            }
+
+            return ApiResult.Ok(transactionResult);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
-            await _mediator.Send(new DeleteTransactionCommand() { Id = id });
-            return Ok();
+            var transactionResult = await _mediator.Send(new DeleteTransactionCommand() { Id = id });
+
+            if (!transactionResult.Succeeded)
+            {
+                return ApiResult.Failure(transactionResult.Error);
+            }
+            return ApiResult.Ok();
         }
     }
 }

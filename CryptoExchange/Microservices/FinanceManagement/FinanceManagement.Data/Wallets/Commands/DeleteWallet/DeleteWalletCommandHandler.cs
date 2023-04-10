@@ -1,4 +1,5 @@
-﻿using FinanceManagement.Core.Repositories;
+﻿using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
 {
-    public class DeleteWalletCommandHandler : IRequestHandler<DeleteWalletCommand, Unit>
+    public class DeleteWalletCommandHandler : IRequestHandler<DeleteWalletCommand, Result>
     {
         private readonly IWalletRepository _repository;
 
@@ -17,18 +18,20 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
             _repository = repository;
         }
 
-        public async Task<Unit> Handle(DeleteWalletCommand request, 
+        public async Task<Result> Handle(DeleteWalletCommand request, 
             CancellationToken cancellationToken)
         {
             var wallet = await _repository.GetByIdAsync(request.Id);
 
             if (wallet == null)
-                throw new KeyNotFoundException(nameof(wallet));
+            {
+                return Result.Failure(ErrorType.NotFound, "Wallet not found");
+            }
 
             await _repository.RemoveAsync(wallet);
             await _repository.SaveChangesAsync();
 
-            return Unit.Value;
+            return Result.Ok();
         }
     }
 }
