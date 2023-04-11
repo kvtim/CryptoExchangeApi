@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Data.Services
+namespace CurrencyManagement.Core.Services
 {
     public interface IService<T> where T : class
     {

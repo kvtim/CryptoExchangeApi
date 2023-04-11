@@ -63,7 +63,7 @@ namespace CurrencyManagement.Data.Migrations
                     b.Property<DateTime?>("FromDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2023, 3, 27, 14, 40, 20, 431, DateTimeKind.Utc).AddTicks(1925));
+                        .HasDefaultValue(new DateTime(2023, 3, 28, 9, 53, 19, 265, DateTimeKind.Utc).AddTicks(6772));
 
                     b.Property<bool>("IsCurrent")
                         .ValueGeneratedOnAdd()
@@ -84,7 +84,8 @@ namespace CurrencyManagement.Data.Migrations
                 {
                     b.HasOne("CurrencyManagement.Core.Models.Currency", "Currency")
                         .WithMany("CurrencyDimensions")
-                        .HasForeignKey("CurrencyId");
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Currency");
                 });

@@ -9,5 +9,7 @@ namespace CurrencyManagement.Core.Repositories
 {
     public interface ICurrencyRepository : IRepository<Currency>
     {
+        Task<Currency> GetByIdWithDimensionAsync(int id);
+        Task<IEnumerable<Currency>> GetAllWithDimensionAsync();
     }
 }
