@@ -7,6 +7,9 @@ using FinanceManagement.Data.Wallets.Commands.CreateWallet;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data.Repositories;
 using FinanceManagement.Api.Extensions;
+using MassTransit;
+using FinanceManagement.Api.EventBusConsumer;
+using EventBus.Messages.Common;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -32,6 +35,20 @@ builder.Services.AddControllersWithJsonConfiguration();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMassTransit(config =>
+{
+    config.AddConsumer<CreateNewUserWalletConsumer>();
+    config.UsingRabbitMq((ctx, cfg) => 
+    {
+        cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+        cfg.ReceiveEndpoint(EventBusConstants.CreateNewUserWallet, c => {
+            c.ConfigureConsumer<CreateNewUserWalletConsumer>(ctx);
+        });
+    });
+});
+
+builder.Services.AddScoped<CreateNewUserWalletConsumer>();
 
 var app = builder.Build();
 
