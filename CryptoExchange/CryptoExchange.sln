@@ -7,13 +7,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CurrencyManagement", "CurrencyManagement", "{C4DB9D35-2959-4B1B-807F-230AD14FB2BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyManagement.Api", "Microservices\CurrencyManagement\CurrencyManagement.Api\CurrencyManagement.Api.csproj", "{CBE66555-AAD5-4B6D-83E4-5955FEF332B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyManagement.Api", "Microservices\CurrencyManagement\CurrencyManagement.Api\CurrencyManagement.Api.csproj", "{CBE66555-AAD5-4B6D-83E4-5955FEF332B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyManagement.Core", "Microservices\CurrencyManagement\CurrencyManagement.Core\CurrencyManagement.Core.csproj", "{80CDB193-A658-4246-BC23-78B50B32CDE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyManagement.Core", "Microservices\CurrencyManagement\CurrencyManagement.Core\CurrencyManagement.Core.csproj", "{80CDB193-A658-4246-BC23-78B50B32CDE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyManagement.Data", "Microservices\CurrencyManagement\CurrencyManagement.Data\CurrencyManagement.Data.csproj", "{B62DF90A-0953-458C-BAC1-1E94052D86A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyManagement.Data", "Microservices\CurrencyManagement\CurrencyManagement.Data\CurrencyManagement.Data.csproj", "{B62DF90A-0953-458C-BAC1-1E94052D86A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyManagement.Services", "Microservices\CurrencyManagement\CurrencyManagement.Services\CurrencyManagement.Services.csproj", "{9AE482BB-87EB-4E21-AA63-DCE6858B536F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyManagement.Services", "Microservices\CurrencyManagement\CurrencyManagement.Services\CurrencyManagement.Services.csproj", "{9AE482BB-87EB-4E21-AA63-DCE6858B536F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserManagement", "UserManagement", "{79C731E7-9876-4A81-9F1F-B19FB2906570}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Core", "Microservices\UserManagement\UserManagement.Core\UserManagement.Core.csproj", "{70C4069E-778F-4296-804B-80F5DF60D652}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Data", "Microservices\UserManagement\UserManagement.Data\UserManagement.Data.csproj", "{DE761510-D960-4CC8-B024-227DFA195259}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Services", "Microservices\UserManagement\UserManagement.Services\UserManagement.Services.csproj", "{F2E90E0F-1EC6-4C5A-AE99-603485B65496}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Api", "Microservices\UserManagement\UserManagement.Api\UserManagement.Api\UserManagement.Api.csproj", "{CFD1CA15-E675-4840-B6AD-448413777288}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +47,22 @@ Global
 		{9AE482BB-87EB-4E21-AA63-DCE6858B536F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AE482BB-87EB-4E21-AA63-DCE6858B536F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AE482BB-87EB-4E21-AA63-DCE6858B536F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70C4069E-778F-4296-804B-80F5DF60D652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C4069E-778F-4296-804B-80F5DF60D652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C4069E-778F-4296-804B-80F5DF60D652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C4069E-778F-4296-804B-80F5DF60D652}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE761510-D960-4CC8-B024-227DFA195259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE761510-D960-4CC8-B024-227DFA195259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE761510-D960-4CC8-B024-227DFA195259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE761510-D960-4CC8-B024-227DFA195259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2E90E0F-1EC6-4C5A-AE99-603485B65496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2E90E0F-1EC6-4C5A-AE99-603485B65496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2E90E0F-1EC6-4C5A-AE99-603485B65496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2E90E0F-1EC6-4C5A-AE99-603485B65496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFD1CA15-E675-4840-B6AD-448413777288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFD1CA15-E675-4840-B6AD-448413777288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFD1CA15-E675-4840-B6AD-448413777288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFD1CA15-E675-4840-B6AD-448413777288}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +73,11 @@ Global
 		{80CDB193-A658-4246-BC23-78B50B32CDE8} = {C4DB9D35-2959-4B1B-807F-230AD14FB2BC}
 		{B62DF90A-0953-458C-BAC1-1E94052D86A1} = {C4DB9D35-2959-4B1B-807F-230AD14FB2BC}
 		{9AE482BB-87EB-4E21-AA63-DCE6858B536F} = {C4DB9D35-2959-4B1B-807F-230AD14FB2BC}
+		{79C731E7-9876-4A81-9F1F-B19FB2906570} = {B0C13ABA-C5E6-4D81-91F9-1BDF2BE809BE}
+		{70C4069E-778F-4296-804B-80F5DF60D652} = {79C731E7-9876-4A81-9F1F-B19FB2906570}
+		{DE761510-D960-4CC8-B024-227DFA195259} = {79C731E7-9876-4A81-9F1F-B19FB2906570}
+		{F2E90E0F-1EC6-4C5A-AE99-603485B65496} = {79C731E7-9876-4A81-9F1F-B19FB2906570}
+		{CFD1CA15-E675-4840-B6AD-448413777288} = {79C731E7-9876-4A81-9F1F-B19FB2906570}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5872517A-CEDD-49A3-80B2-FE16C83C18EE}
