@@ -17,21 +17,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyManagement.Services
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinanceManagement", "FinanceManagement", "{B390EE57-F0C8-4056-AD1E-0D50E3A05775}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManagement.Api", "Microservices\FinanceManagement\FinanceManagement.Api\FinanceManagement.Api.csproj", "{8DDF8D53-5996-4AAC-9724-AD9568945293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinanceManagement.Api", "Microservices\FinanceManagement\FinanceManagement.Api\FinanceManagement.Api.csproj", "{8DDF8D53-5996-4AAC-9724-AD9568945293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManagement.Core", "Microservices\FinanceManagement\FinanceManagement.Core\FinanceManagement.Core.csproj", "{0A62EA43-A8C8-40F3-AD4E-58F5463A2C7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinanceManagement.Core", "Microservices\FinanceManagement\FinanceManagement.Core\FinanceManagement.Core.csproj", "{0A62EA43-A8C8-40F3-AD4E-58F5463A2C7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceManagement.Data", "Microservices\FinanceManagement\FinanceManagement.Data\FinanceManagement.Data.csproj", "{D410511D-3B60-4EE4-A834-63EED66A2C9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinanceManagement.Data", "Microservices\FinanceManagement\FinanceManagement.Data\FinanceManagement.Data.csproj", "{D410511D-3B60-4EE4-A834-63EED66A2C9E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserManagement", "UserManagement", "{79C731E7-9876-4A81-9F1F-B19FB2906570}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Core", "Microservices\UserManagement\UserManagement.Core\UserManagement.Core.csproj", "{70C4069E-778F-4296-804B-80F5DF60D652}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Core", "Microservices\UserManagement\UserManagement.Core\UserManagement.Core.csproj", "{70C4069E-778F-4296-804B-80F5DF60D652}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Data", "Microservices\UserManagement\UserManagement.Data\UserManagement.Data.csproj", "{DE761510-D960-4CC8-B024-227DFA195259}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Data", "Microservices\UserManagement\UserManagement.Data\UserManagement.Data.csproj", "{DE761510-D960-4CC8-B024-227DFA195259}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Services", "Microservices\UserManagement\UserManagement.Services\UserManagement.Services.csproj", "{F2E90E0F-1EC6-4C5A-AE99-603485B65496}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Services", "Microservices\UserManagement\UserManagement.Services\UserManagement.Services.csproj", "{F2E90E0F-1EC6-4C5A-AE99-603485B65496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Api", "Microservices\UserManagement\UserManagement.Api\UserManagement.Api\UserManagement.Api.csproj", "{CFD1CA15-E675-4840-B6AD-448413777288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement.Api", "Microservices\UserManagement\UserManagement.Api\UserManagement.Api\UserManagement.Api.csproj", "{CFD1CA15-E675-4840-B6AD-448413777288}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{E616F78F-8099-477F-89C9-56DB88C9CDF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,10 @@ Global
 		{CFD1CA15-E675-4840-B6AD-448413777288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFD1CA15-E675-4840-B6AD-448413777288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFD1CA15-E675-4840-B6AD-448413777288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E616F78F-8099-477F-89C9-56DB88C9CDF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E616F78F-8099-477F-89C9-56DB88C9CDF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E616F78F-8099-477F-89C9-56DB88C9CDF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E616F78F-8099-477F-89C9-56DB88C9CDF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

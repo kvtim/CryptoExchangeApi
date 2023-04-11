@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UserManagement.Api.ExtensionMethods
+namespace UserManagement.Api.Extensions
 {
     public static class SwaggerExtension
     {

@@ -61,7 +61,7 @@ namespace FinanceManagement.Api.Controllers
             return ApiResult.Ok(transactionResult);
         }
 
-        [HttpGet("GetUserTransactions/{userId}")]
+        [HttpGet("get-user-transactions/{userId}")]
         public async Task<ApiResult<IEnumerable<TransactionDto>>> GetUserTransactions(int userId)
         {
             var transactionsResult = await _mediator.Send(new GetUserTransactionsQuery() { UserId = userId });

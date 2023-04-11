@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using FinanceManagement.Data.Wallets.Commands.CreateWallet;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data.Repositories;
-using FinanceManagement.Api.ExtensionMethods;
+using FinanceManagement.Api.Extensions;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

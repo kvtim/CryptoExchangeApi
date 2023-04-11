@@ -52,7 +52,7 @@ namespace FinanceManagement.Api.Controllers
             return ApiResult.Ok(walletResult);
         }
 
-        [HttpGet("GetUserCurrencies/{userId}")]
+        [HttpGet("get-user-currencies/{userId}")]
         public async Task<ApiResult<IEnumerable<WalletDto>>> GetUserWallets(int userId)
         {
             var walletsResult = await _mediator.Send(new GetUserWalletsQuery() { UserId = userId });

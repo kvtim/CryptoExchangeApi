@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceManagement.Api.ExtensionMethods
+namespace UserManagement.Api.Extensions
 {
     public static class ControllersExtension
     {

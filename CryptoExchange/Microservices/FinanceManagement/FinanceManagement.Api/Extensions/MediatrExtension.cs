@@ -1,6 +1,6 @@
 ﻿using FinanceManagement.Data.Wallets.Commands.CreateWallet;
 
-namespace FinanceManagement.Api.ExtensionMethods
+namespace FinanceManagement.Api.Extensions
 {
     public static class MediatrExtension
     {
