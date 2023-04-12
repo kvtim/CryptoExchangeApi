@@ -50,7 +50,7 @@ namespace UserManagement.Api.Controllers
 
             var newUser = await _userService.GetByUserNameAsync(registerUserDto.UserName);
 
-            await _publishEndpoint.Publish(new CreateNewUserWalletУмуте()
+            await _publishEndpoint.Publish(new CreateNewUserWalletEvent()
             { 
                 UserId = newUser.Value.Id
             });

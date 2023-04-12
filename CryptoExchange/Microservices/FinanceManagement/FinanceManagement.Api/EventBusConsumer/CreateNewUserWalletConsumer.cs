@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FinanceManagement.Api.EventBusConsumer
 {
-    public class CreateNewUserWalletConsumer : IConsumer<CreateNewUserWalletУмуте>
+    public class CreateNewUserWalletConsumer : IConsumer<CreateNewUserWalletEvent>
     {
         private readonly IMediator _mediator;
         private readonly ILogger<CreateNewUserWalletConsumer> _logger;
@@ -26,7 +26,7 @@ namespace FinanceManagement.Api.EventBusConsumer
             _logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<CreateNewUserWalletУмуте> context)
+        public async Task Consume(ConsumeContext<CreateNewUserWalletEvent> context)
         {
             var command = new CreateWalletCommand()
             {

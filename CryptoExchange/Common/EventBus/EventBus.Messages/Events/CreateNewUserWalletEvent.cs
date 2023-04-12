@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventBus.Messages.Events
 {
-    public class CreateNewUserWalletУмуте : IntegrationBaseEvent
+    public class CreateNewUserWalletEvent : IntegrationBaseEvent
     {
         public required int UserId { get; set; }
     }
