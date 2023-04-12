@@ -9,6 +9,7 @@
       "UpstreamHttpMethod": [ "Get", "Post" ],
       "DownstreamPathTemplate": "/api/Currencies",
       "DownstreamScheme": "https",
+      "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -21,6 +22,7 @@
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
       "DownstreamPathTemplate": "/api/Currencies/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -33,6 +35,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Currencies/all-with-dimension",
       "DownstreamScheme": "https",
+      "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -45,6 +48,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Currencies/currency-with-dimension/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -57,6 +61,7 @@
       "UpstreamHttpMethod": [ "Put" ],
       "DownstreamPathTemplate": "/api/Currencies/increase-price/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -69,6 +74,7 @@
       "UpstreamHttpMethod": [ "Put" ],
       "DownstreamPathTemplate": "/api/Currencies/reduce-price/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -82,6 +88,7 @@
       "UpstreamHttpMethod": [ "Get", "Post" ],
       "DownstreamPathTemplate": "/api/Wallets",
       "DownstreamScheme": "https",
+      "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -94,6 +101,7 @@
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
       "DownstreamPathTemplate": "/api/Wallets/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -106,6 +114,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Wallets/get-user-currencies/{userId}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -118,6 +127,7 @@
       "UpstreamHttpMethod": [ "Get", "Post" ],
       "DownstreamPathTemplate": "/api/Transactions",
       "DownstreamScheme": "https",
+      "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -130,6 +140,7 @@
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
       "DownstreamPathTemplate": "/api/Transactions/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -142,6 +153,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Transactions/get-user-transactions/{userId}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -151,10 +163,11 @@
     },
     //User API
     {
-      "UpstreamPathTemplate": "/gateway/registration",
+      "UpstreamPathTemplate": "/gateway/Users/registration",
       "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/registration",
+      "DownstreamPathTemplate": "/api/Users/registration",
       "DownstreamScheme": "https",
+      "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -163,10 +176,11 @@
       ]
     },
     {
-      "UpstreamPathTemplate": "/gateway/login",
+      "UpstreamPathTemplate": "/gateway/Users/login",
       "UpstreamHttpMethod": [ "Post" ],
-      "DownstreamPathTemplate": "/api/login",
+      "DownstreamPathTemplate": "/api/Users/login",
       "DownstreamScheme": "https",
+      "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -179,6 +193,7 @@
       "UpstreamHttpMethod": [ "Get" ],
       "DownstreamPathTemplate": "/api/Users",
       "DownstreamScheme": "https",
+      "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -191,6 +206,7 @@
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ],
       "DownstreamPathTemplate": "/api/Users/{id}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -203,6 +219,7 @@
       "UpstreamHttpMethod": [ "Put" ],
       "DownstreamPathTemplate": "/api/Users/change-password",
       "DownstreamScheme": "https",
+      "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -210,5 +227,38 @@
         }
       ]
     }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "UsersAPI",
+      "Config": [
+        {
+          "Name": "Usrers API",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "CurrencyAPI",
+      "Config": [
+        {
+          "Name": "Currency API",
+          "Version": "v1",
+          "Url": "https://localhost:5001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "FinanceAPI",
+      "Config": [
+        {
+          "Name": "Finance API",
+          "Version": "v1",
+          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+        }
+      ]
+    }
   ]
+
 }

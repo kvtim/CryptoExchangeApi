@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UserManagement.Api.Extensions
+namespace CurrencyManagement.Api.Extensions
 {
     public static class SwaggerExtension
     {
@@ -18,7 +18,7 @@ namespace UserManagement.Api.Extensions
                     "v1",
                     new OpenApiInfo
                     {
-                        Title = "User Management API",
+                        Title = "Currency Management API",
                         Version = "v1"
                     });
 

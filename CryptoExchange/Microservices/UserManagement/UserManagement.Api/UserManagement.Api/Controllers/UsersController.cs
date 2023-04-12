@@ -7,6 +7,8 @@ using UserManagement.Core.Models;
 using UserManagement.Core.Services;
 using UserManagement.Core.Dtos.User;
 using UserManagement.Core.ErrorHandling;
+using MassTransit;
+using EventBus.Messages.Events;
 
 namespace UserManagement.Api.Controllers
 {
@@ -19,17 +21,20 @@ namespace UserManagement.Api.Controllers
         private readonly IAuthenticationService _authenticationService;
         private readonly IRegistrationService _registrationService;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public UsersController(
             IUserService userService,
             IAuthenticationService authenticationService,
             IRegistrationService registrationService,
-            IMapper mapper)
+            IMapper mapper,
+            IPublishEndpoint publishEndpoint)
         {
             _userService = userService;
             _authenticationService = authenticationService;
             _registrationService = registrationService;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpPost("registration")]
@@ -42,6 +47,13 @@ namespace UserManagement.Api.Controllers
             {
                 return ApiResult.Failure(tokenResult.Error);
             }
+
+            var newUser = await _userService.GetByUserNameAsync(registerUserDto.UserName);
+
+            await _publishEndpoint.Publish(new CreateNewUserWalletEvent()
+            { 
+                UserId = newUser.Value.Id
+            });
 
             return ApiResult.Ok(tokenResult);
         }
