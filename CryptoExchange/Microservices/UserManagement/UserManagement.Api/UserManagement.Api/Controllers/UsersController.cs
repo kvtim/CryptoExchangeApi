@@ -107,7 +107,7 @@ namespace UserManagement.Api.Controllers
             return ApiResult.Ok(_mapper.Map<UserDto>(updatedUser));
         }
 
-        [HttpPut("ChangePassword")]
+        [HttpPut("change-password")]
         public async Task<ApiResult<UserDto>> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
         {
             var userResult = await _userService.ChangePassword(User.Identity.Name, changePasswordDto);

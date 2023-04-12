@@ -27,7 +27,7 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(_mapper.Map<IEnumerable<CurrencyDto>>(currencies));
         }
 
-        [HttpGet("AllWithDimension")]
+        [HttpGet("all-with-dimension")]
         public async Task<IActionResult> GetAllWithDimension()
         {
             var currencies = await _currencyService.GetAllWithDimensionAsync();
@@ -45,7 +45,7 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(_mapper.Map<CurrencyDto>(currency));
         }
 
-        [HttpGet("CurrencyWithDimension/{id}")]
+        [HttpGet("currency-with-dimension/{id}")]
         public async Task<IActionResult> GetByIdlWithDimension(int id)
         {
             var currency = await _currencyService.GetByIdlWithDimensionAsync(id);
@@ -77,7 +77,7 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(updateCurrencyDto);
         }
 
-        [HttpPut("IncreasePrice/{id}")]
+        [HttpPut("increase-price/{id}")]
         public async Task<IActionResult> IncreasePrice(int id,
             [FromBody] ChangeCurrencyPriceDto increasePrice)
         {
@@ -86,7 +86,7 @@ namespace CurrencyManagement.Api.Controllers
             return Ok(_mapper.Map<CurrencyDto>(currency));
         }
 
-        [HttpPut("ReducePrice/{id}")]
+        [HttpPut("reduce-price/{id}")]
         public async Task<IActionResult> ReducePrice(int id,
             [FromBody] ChangeCurrencyPriceDto reducePrice)
         {
