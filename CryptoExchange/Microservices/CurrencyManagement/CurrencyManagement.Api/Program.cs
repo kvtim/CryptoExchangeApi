@@ -7,10 +7,11 @@ using CurrencyManagement.Core.Services;
 using CurrencyManagement.Services.Services;
 using Microsoft.EntityFrameworkCore;
 using CurrencyManagement.Api.Middlewares;
+using CurrencyManagement.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddJWTAuthentication(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -34,7 +35,8 @@ builder.Services.AddControllers()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.ConfigureSwagger();
 
 var app = builder.Build();
 
@@ -50,6 +52,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

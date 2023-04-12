@@ -4,11 +4,13 @@ using CurrencyManagement.Core.Repositories;
 using CurrencyManagement.Data.Dtos.Currency;
 using CurrencyManagement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurrencyManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CurrenciesController : ControllerBase
     {
         private readonly ICurrencyService _currencyService;
@@ -21,6 +23,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var currencies = await _currencyService.GetAllAsync();
@@ -28,6 +31,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpGet("all-with-dimension")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllWithDimension()
         {
             var currencies = await _currencyService.GetAllWithDimensionAsync();
@@ -35,6 +39,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int id)
         {
             var currency = await _currencyService.GetByIdAsync(id);
@@ -46,6 +51,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpGet("currency-with-dimension/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByIdlWithDimension(int id)
         {
             var currency = await _currencyService.GetByIdlWithDimensionAsync(id);
@@ -57,6 +63,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add([FromBody] CreateCurrencyDto createCurrencyDto)
         {
             var currency = _mapper.Map<Currency>(createCurrencyDto);
@@ -67,6 +74,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCurrencyDto updateCurrencyDto)
         {
             var currency = _mapper.Map<Currency>(updateCurrencyDto);
@@ -78,6 +86,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpPut("increase-price/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> IncreasePrice(int id,
             [FromBody] ChangeCurrencyPriceDto increasePrice)
         {
@@ -87,6 +96,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpPut("reduce-price/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ReducePrice(int id,
             [FromBody] ChangeCurrencyPriceDto reducePrice)
         {
@@ -96,6 +106,7 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var currency = await _currencyService.GetByIdAsync(id);

@@ -230,6 +230,16 @@
   ],
   "SwaggerEndPoints": [
     {
+      "Key": "UsersAPI",
+      "Config": [
+        {
+          "Name": "Usrers API",
+          "Version": "v1",
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
       "Key": "CurrencyAPI",
       "Config": [
         {
@@ -246,16 +256,6 @@
           "Name": "Finance API",
           "Version": "v1",
           "Url": "https://localhost:5002/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "UsersAPI",
-      "Config": [
-        {
-          "Name": "Usrers API",
-          "Version": "v1",
-          "Url": "https://localhost:5003/swagger/v1/swagger.json"
         }
       ]
     }

@@ -15,7 +15,7 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddJWTAuthentication(builder.Configuration);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -50,6 +50,8 @@ builder.Services.AddMassTransit(config =>
 
 builder.Services.AddScoped<CreateNewUserWalletConsumer>();
 
+builder.Services.ConfigureSwagger();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +63,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

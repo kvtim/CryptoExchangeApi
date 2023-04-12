@@ -16,6 +16,7 @@ using FinanceManagement.Data.Wallets.Queries.GetAllWallets;
 using FinanceManagement.Data.Wallets.Queries.GetWalletById;
 using FinanceManagement.Data.Wallets.Queries.GetWalletList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace FinanceManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -36,6 +38,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<IEnumerable<TransactionDto>>> GetAllTransactions()
         {
             var transactionsResult = await _mediator.Send(new GetAllTransactionsQuery());
@@ -49,6 +52,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<TransactionDto>> GetTransactionById(int id)
         {
             var transactionResult = await _mediator.Send(new GetTransactionByIdQuery() { Id = id });
@@ -91,6 +95,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<TransactionDto>> Update(int id,
             [FromBody] UpdateTransactionDto updateTransactionDto)
         {
@@ -110,6 +115,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult> Delete(int id)
         {
             var transactionResult = await _mediator.Send(new DeleteTransactionCommand() { Id = id });

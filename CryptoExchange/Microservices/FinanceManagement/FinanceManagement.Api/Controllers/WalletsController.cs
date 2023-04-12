@@ -9,12 +9,14 @@ using FinanceManagement.Data.Wallets.Queries.GetAllWallets;
 using FinanceManagement.Data.Wallets.Queries.GetWalletById;
 using FinanceManagement.Data.Wallets.Queries.GetWalletList;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WalletsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -27,6 +29,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<IEnumerable<WalletDto>>> GetAllWallets()
         {
             var walletsResult = await _mediator.Send(new GetAllWalletsQuery());
@@ -40,6 +43,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<WalletDto>> GetWalletById(int id)
         {
             var walletResult = await _mediator.Send(new GetWalletByIdQuery() { Id = id });
@@ -66,6 +70,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<WalletDto>> Add([FromBody] CreateWalletDto createWalletDto)
         {
             var walletResult = await _mediator.Send(new CreateWalletCommand()
@@ -82,6 +87,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult<WalletDto>> Update(int id, [FromBody] UpdateWalletDto updateWalletDto)
         {
             var walletResult = await _mediator.Send(new UpdateWalletCommand()
@@ -99,6 +105,7 @@ namespace FinanceManagement.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ApiResult> Delete(int id)
         {
             var walletResult =  await _mediator.Send(new DeleteWalletCommand() { Id = id });
