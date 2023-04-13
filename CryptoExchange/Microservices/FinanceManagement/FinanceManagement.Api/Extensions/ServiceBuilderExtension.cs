@@ -1,5 +1,4 @@
 using FinanceManagement.Api.EventBusConsumer;
-using FinanceManagement.Api.Extentions;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data;
 using FinanceManagement.Data.Repositories;

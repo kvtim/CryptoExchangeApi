@@ -1,3 +1,4 @@
+using FinanceManagement.Api.Extentions;
 using UserManagement.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,8 @@ builder.Services.ConfigureServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.MigrateIfDbNotCreated();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
