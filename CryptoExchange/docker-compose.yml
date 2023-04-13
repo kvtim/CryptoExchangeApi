@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  currencymanagement.api:
+    image: ${DOCKER_REGISTRY-}currencymanagementapi
+    build:
+      context: .
+      dockerfile: Microservices/CurrencyManagement/CurrencyManagement.Api/Dockerfile
+    depends_on:
+      - "postgres"
+
+  financemanagement.api:
+    image: ${DOCKER_REGISTRY-}financemanagementapi
+    build:
+      context: .
+      dockerfile: Microservices/FinanceManagement/FinanceManagement.Api/Dockerfile
+    depends_on:
+      - "postgres"
+      - "rabbitmq"
+
+  usermanagement.api:
+    image: ${DOCKER_REGISTRY-}usermanagementapi
+    build:
+      context: .
+      dockerfile: Microservices/UserManagement/UserManagement.Api/UserManagement.Api/Dockerfile
+    depends_on:
+      - "postgres"
+      - "rabbitmq"
+
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    depends_on:
+      - "currencymanagement.api"
+      - "financemanagement.api"
+      - "usermanagement.api"
+
+  postgres:
+    image: postgres
+    container_name: postgres
+
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    container_name: rabbitmq
