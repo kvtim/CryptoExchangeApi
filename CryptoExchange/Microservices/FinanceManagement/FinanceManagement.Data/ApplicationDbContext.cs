@@ -1,5 +1,6 @@
 ﻿using FinanceManagement.Core.Models;
 using FinanceManagement.Data.Configuration;
+using FinanceManagement.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace FinanceManagement.Data
         {
             modelBuilder.ApplyConfiguration(new WalletConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new WalletSeed());
         }
     }
 }
