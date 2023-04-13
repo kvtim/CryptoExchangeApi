@@ -11,7 +11,7 @@ namespace EventBus.Messages.Events
         public IntegrationBaseEvent()
         {
             Id = Guid.NewGuid();
-            CreationDate = DateTime.UtcNow;
+            CreationDate = DateTime.Now;
         }
 
         public IntegrationBaseEvent(Guid id, DateTime createDate)

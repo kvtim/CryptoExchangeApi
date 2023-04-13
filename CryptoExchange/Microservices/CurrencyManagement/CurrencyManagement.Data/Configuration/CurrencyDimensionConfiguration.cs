@@ -15,13 +15,14 @@ namespace CurrencyManagement.Data.Configuration
         {
             builder.HasOne(c => c.Currency)
                 .WithMany(cd => cd.CurrencyDimensions)
+                .HasForeignKey(c => c.CurrencyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(c => c.PriceInUSD)
                 .IsRequired();
 
             builder.Property(c => c.FromDate)
-                .HasDefaultValue(DateTime.UtcNow);
+                .IsRequired();
 
             builder.Property(c => c.IsCurrent)
                 .HasDefaultValue(true);

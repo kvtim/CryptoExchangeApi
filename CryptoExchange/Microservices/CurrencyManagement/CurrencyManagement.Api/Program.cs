@@ -4,6 +4,8 @@ using CurrencyManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using CurrencyManagement.Api.Extentions;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureServices(builder.Configuration);

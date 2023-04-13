@@ -10,10 +10,11 @@ namespace CurrencyManagement.Core.Models
     {
         public int Id { get; set; }
         public decimal PriceInUSD { get; set; }
-        public DateTime? FromDate { get; set; } = DateTime.UtcNow;
+        public DateTime? FromDate { get; set; } = DateTime.Now;
         public DateTime? EndDate { get; set; }
         public bool IsCurrent { get; set; }
 
+        public int CurrencyId { get; set; }
         public Currency? Currency { get; set; }
     }
 }
