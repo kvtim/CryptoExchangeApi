@@ -19,7 +19,8 @@ namespace CurrencyManagement.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    CurrentPriceInUSD = table.Column<decimal>(type: "numeric", nullable: false)
+                    CurrentPriceInUSD = table.Column<decimal>(type: "numeric", nullable: false),
+                    CurrencyType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,7 +34,7 @@ namespace CurrencyManagement.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PriceInUSD = table.Column<decimal>(type: "numeric", nullable: false),
-                    FromDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValue: new DateTime(2023, 3, 27, 14, 40, 20, 431, DateTimeKind.Utc).AddTicks(1925)),
+                    FromDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValue: new DateTime(2023, 4, 13, 13, 18, 14, 726, DateTimeKind.Utc).AddTicks(4547)),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsCurrent = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     CurrencyId = table.Column<int>(type: "integer", nullable: true)
@@ -45,7 +46,8 @@ namespace CurrencyManagement.Data.Migrations
                         name: "FK_CurrencyDimensions_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currencies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

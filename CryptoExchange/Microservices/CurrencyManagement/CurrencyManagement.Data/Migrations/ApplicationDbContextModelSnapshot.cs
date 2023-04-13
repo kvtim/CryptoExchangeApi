@@ -66,7 +66,7 @@ namespace CurrencyManagement.Data.Migrations
                     b.Property<DateTime?>("FromDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2023, 4, 13, 13, 1, 11, 569, DateTimeKind.Utc).AddTicks(1290));
+                        .HasDefaultValue(new DateTime(2023, 4, 13, 13, 18, 14, 726, DateTimeKind.Utc).AddTicks(4547));
 
                     b.Property<bool>("IsCurrent")
                         .ValueGeneratedOnAdd()

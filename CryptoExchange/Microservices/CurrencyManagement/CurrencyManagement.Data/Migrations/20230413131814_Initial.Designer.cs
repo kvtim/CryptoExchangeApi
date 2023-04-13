@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CurrencyManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230413130111_Add-currency-type")]
-    partial class Addcurrencytype
+    [Migration("20230413131814_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,7 @@ namespace CurrencyManagement.Data.Migrations
                     b.Property<DateTime?>("FromDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2023, 4, 13, 13, 1, 11, 569, DateTimeKind.Utc).AddTicks(1290));
+                        .HasDefaultValue(new DateTime(2023, 4, 13, 13, 18, 14, 726, DateTimeKind.Utc).AddTicks(4547));
 
                     b.Property<bool>("IsCurrent")
                         .ValueGeneratedOnAdd()
