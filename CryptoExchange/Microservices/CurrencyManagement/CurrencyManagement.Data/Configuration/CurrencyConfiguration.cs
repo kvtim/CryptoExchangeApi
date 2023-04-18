@@ -20,6 +20,9 @@ namespace CurrencyManagement.Data.Configuration
             builder.Property(c => c.CurrentPriceInUSD)
                 .IsRequired();
 
+            builder.Property(c => c.CurrencyType)
+                .IsRequired();
+
             builder
                 .HasIndex(u => u.Name)
                 .IsUnique();

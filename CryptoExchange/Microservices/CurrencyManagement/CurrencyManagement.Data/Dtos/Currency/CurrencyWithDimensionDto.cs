@@ -1,4 +1,5 @@
-﻿using CurrencyManagement.Data.Dtos.CurrencyDimension;
+﻿using CurrencyManagement.Core.Models;
+using CurrencyManagement.Data.Dtos.CurrencyDimension;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,6 +14,7 @@ namespace CurrencyManagement.Data.Dtos.Currency
         public int Id { get; set; }
         public string? Name { get; set; }
         public decimal CurrentPriceInUSD { get; set; }
+        public CurrencyType CurrencyType { get; set; }
 
         public List<CurrencyDimensionDto>? CurrencyDimensions { get; set; }
     }

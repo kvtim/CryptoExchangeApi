@@ -27,6 +27,12 @@ namespace CurrencyManagement.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var currencies = await _currencyService.GetAllAsync();
+
+            if (!currencies.Any())
+            {
+                throw new KeyNotFoundException("Currency not found");
+            }
+
             return Ok(_mapper.Map<IEnumerable<CurrencyDto>>(currencies));
         }
 
@@ -35,6 +41,12 @@ namespace CurrencyManagement.Api.Controllers
         public async Task<IActionResult> GetAllWithDimension()
         {
             var currencies = await _currencyService.GetAllWithDimensionAsync();
+
+            if (!currencies.Any())
+            {
+                throw new KeyNotFoundException("Currency not found");
+            }
+
             return Ok(_mapper.Map<IEnumerable<CurrencyWithDimensionDto>>(currencies));
         }
 
@@ -45,7 +57,9 @@ namespace CurrencyManagement.Api.Controllers
             var currency = await _currencyService.GetByIdAsync(id);
 
             if (currency == null)
+            {
                 throw new KeyNotFoundException("Currency not found");
+            }
 
             return Ok(_mapper.Map<CurrencyDto>(currency));
         }
@@ -57,7 +71,9 @@ namespace CurrencyManagement.Api.Controllers
             var currency = await _currencyService.GetByIdlWithDimensionAsync(id);
 
             if (currency == null)
+            {
                 throw new KeyNotFoundException("Currency not found");
+            }
 
             return Ok(_mapper.Map<CurrencyWithDimensionDto>(currency));
         }
@@ -112,7 +128,9 @@ namespace CurrencyManagement.Api.Controllers
             var currency = await _currencyService.GetByIdAsync(id);
 
             if (currency == null)
+            {
                 throw new KeyNotFoundException("Currency not found");
+            }
 
             await _currencyService.RemoveAsync(currency);
             return Ok();

@@ -12,6 +12,8 @@ namespace CurrencyManagement.Core.Models
         public string? Name { get; set; }
         public decimal CurrentPriceInUSD { get; set; }
 
+        public CurrencyType CurrencyType { get; set; }
+
         public List<CurrencyDimension>? CurrencyDimensions { get; set; }
             = new List<CurrencyDimension>();
     }

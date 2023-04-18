@@ -2,7 +2,7 @@
 using FinanceManagement.Api.EventBusConsumer;
 using MassTransit;
 
-namespace FinanceManagement.Api.Extentions
+namespace FinanceManagement.Api.Extensions
 {
     public static class MassTransitExtension
     {

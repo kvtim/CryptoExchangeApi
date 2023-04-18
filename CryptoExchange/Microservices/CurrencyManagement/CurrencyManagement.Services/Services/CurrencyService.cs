@@ -97,13 +97,13 @@ namespace CurrencyManagement.Services.Services
                 throw new KeyNotFoundException("Currency not found");
 
             var lastDim = updatedEntity.CurrencyDimensions.First(c => c.IsCurrent == true);
-            lastDim.EndDate = DateTime.UtcNow;
+            lastDim.EndDate = DateTime.Now;
             lastDim.IsCurrent = false;
 
             updatedEntity.CurrencyDimensions.Add(
                 new CurrencyDimension()
                 {
-                    FromDate = DateTime.UtcNow,
+                    FromDate = DateTime.Now,
                     PriceInUSD = entity.CurrentPriceInUSD
                 });
         }

@@ -1,5 +1,6 @@
 ﻿using CurrencyManagement.Core.Models;
 using CurrencyManagement.Data.Configuration;
+using CurrencyManagement.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace CurrencyManagement.Data
         {
             modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
             modelBuilder.ApplyConfiguration(new CurrencyDimensionConfiguration());
+            modelBuilder.ApplyConfiguration(new CurrencySeed());
+            modelBuilder.ApplyConfiguration(new CurrencyDimensionSeed());
         }
     }
 }
