@@ -1,4 +1,4 @@
-﻿using CurrencyManagement.Data.Dtos.Error;
+﻿using CurrencyManagement.Core.Dtos.Error;
 using CurrencyManagement.Data.Exceptions;
 using System.Net;
 

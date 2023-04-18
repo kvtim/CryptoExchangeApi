@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CurrencyManagement.Core.Models;
-using CurrencyManagement.Data.Dtos.Currency;
-using CurrencyManagement.Data.Dtos.CurrencyDimension;
+using CurrencyManagement.Core.Dtos.Currency;
+using CurrencyManagement.Core.Dtos.CurrencyDimension;
 
 namespace CurrencyManagement.Api.Mappings
 {

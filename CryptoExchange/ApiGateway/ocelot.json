@@ -82,6 +82,58 @@
         }
       ]
     },
+    {
+      "UpstreamPathTemplate": "/gateway/Analysis/insert-data-to-big-query",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/Analysis/insert-data-to-big-query",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "CurrencyAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "currencymanagement.api",
+          "Port": 5001
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Analysis/get-all-dimensions",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Analysis/get-all-dimensions",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "CurrencyAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "currencymanagement.api",
+          "Port": 5001
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Analysis/get-price-different-between-first-and-last-dates",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Analysis/get-price-different-between-first-and-last-dates",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "CurrencyAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "currencymanagement.api",
+          "Port": 5001
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Analysis/get-price-different-between-different-dates",
+      "UpstreamHttpMethod": [ "Put" ],
+      "DownstreamPathTemplate": "/api/Analysis/get-price-different-between-different-dates",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "CurrencyAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "currencymanagement.api",
+          "Port": 5001
+        }
+      ]
+    },
     //Finance API
     {
       "UpstreamPathTemplate": "/gateway/Wallets",

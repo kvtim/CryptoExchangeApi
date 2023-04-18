@@ -12,5 +12,6 @@ namespace CurrencyManagement.Core.Services
         Task<IEnumerable<Currency>> GetAllWithDimensionAsync();
         Task<Currency> GetByIdlWithDimensionAsync(int id);
         Task<Currency> UpdatePriceAsync(int id, decimal increasePrice);
+        Task FillingData(int id);
     }
 }

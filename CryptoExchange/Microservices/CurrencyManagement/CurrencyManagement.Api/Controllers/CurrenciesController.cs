@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CurrencyManagement.Core.Models;
 using CurrencyManagement.Core.Repositories;
-using CurrencyManagement.Data.Dtos.Currency;
+using CurrencyManagement.Core.Dtos.Currency;
 using CurrencyManagement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -51,7 +51,6 @@ namespace CurrencyManagement.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int id)
         {
             var currency = await _currencyService.GetByIdAsync(id);
@@ -134,6 +133,15 @@ namespace CurrencyManagement.Api.Controllers
 
             await _currencyService.RemoveAsync(currency);
             return Ok();
+        }
+
+        [HttpPut("fill-currency-changes/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> FillChange(int id)
+        {
+            await _currencyService.FillingData(id);
+
+            return Ok("Filling completed!");
         }
     }
 }

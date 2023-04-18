@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Data.Dtos.CurrencyDimension
+namespace CurrencyManagement.Core.Dtos.CurrencyDimension
 {
     public class CurrencyDimensionDto
     {
@@ -13,5 +13,6 @@ namespace CurrencyManagement.Data.Dtos.CurrencyDimension
         public DateTime? FromDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsCurrent { get; set; }
+        public int CurrencyId { get; set; }
     }
 }
