@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.BigQuery.V2" Version="3.2.0" />
+  </ItemGroup>
+
 </Project>

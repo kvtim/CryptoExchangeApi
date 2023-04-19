@@ -1,4 +1,4 @@
-﻿using CurrencyManagement.Core.Models;
+﻿using CurrencyManagement.Core.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Data.Dtos.Currency
+namespace CurrencyManagement.Core.Dtos.Currency
 {
-    public class CurrencyDto
+    public class UpdateCurrencyDto
     {
-        public int Id { get; set; }
+        [MinLength(3), MaxLength(128)]
         public string? Name { get; set; }
+        [PriceValidationAttribute]
         public decimal CurrentPriceInUSD { get; set; }
-        public CurrencyType CurrencyType { get; set; }
     }
 }

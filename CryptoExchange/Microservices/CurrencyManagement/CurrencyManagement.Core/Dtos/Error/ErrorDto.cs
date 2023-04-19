@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace CurrencyManagement.Data.Dtos.Error
+namespace CurrencyManagement.Core.Dtos.Error
 {
     public class ErrorDto
     {
