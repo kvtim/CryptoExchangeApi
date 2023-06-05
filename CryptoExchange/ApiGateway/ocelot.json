@@ -12,7 +12,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -25,7 +25,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -38,7 +38,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -51,7 +51,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -64,7 +64,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -77,7 +77,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -90,7 +90,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -103,7 +103,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -116,7 +116,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -129,7 +129,7 @@
       "SwaggerKey": "CurrencyAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "currencymanagement.api",
+          "Host": "currencymanagementapi-app-service",
           "Port": 5001
         }
       ]
@@ -143,7 +143,7 @@
       "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "financemanagement.api",
+          "Host": "financemanagementapi-app-service",
           "Port": 5002
         }
       ]
@@ -156,7 +156,7 @@
       "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "financemanagement.api",
+          "Host": "financemanagementapi-app-service",
           "Port": 5002
         }
       ]
@@ -169,7 +169,7 @@
       "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "financemanagement.api",
+          "Host": "financemanagementapi-app-service",
           "Port": 5002
         }
       ]
@@ -182,7 +182,7 @@
       "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "financemanagement.api",
+          "Host": "financemanagementapi-app-service",
           "Port": 5002
         }
       ]
@@ -195,7 +195,7 @@
       "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "financemanagement.api",
+          "Host": "financemanagementapi-app-service",
           "Port": 5002
         }
       ]
@@ -208,7 +208,7 @@
       "SwaggerKey": "FinanceAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "financemanagement.api",
+          "Host": "financemanagementapi-app-service",
           "Port": 5002
         }
       ]
@@ -222,7 +222,7 @@
       "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "usermanagement.api",
+          "Host": "usermanagementapi-app-service",
           "Port": 5003
         }
       ]
@@ -235,7 +235,7 @@
       "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "usermanagement.api",
+          "Host": "usermanagementapi-app-service",
           "Port": 5003
         }
       ]
@@ -248,7 +248,7 @@
       "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "usermanagement.api",
+          "Host": "usermanagementapi-app-service",
           "Port": 5003
         }
       ]
@@ -261,7 +261,7 @@
       "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "usermanagement.api",
+          "Host": "usermanagementapi-app-service",
           "Port": 5003
         }
       ]
@@ -274,7 +274,7 @@
       "SwaggerKey": "UsersAPI",
       "DownstreamHostAndPorts": [
         {
-          "Host": "usermanagement.api",
+          "Host": "usermanagementapi-app-service",
           "Port": 5003
         }
       ]
@@ -287,7 +287,7 @@
         {
           "Name": "Usrers API",
           "Version": "v1",
-          "Url": "http://usermanagement.api:5003/swagger/v1/swagger.json"
+          "Url": "http://usermanagementapi-app-service:5003/swagger/v1/swagger.json"
         }
       ]
     },
@@ -297,7 +297,7 @@
         {
           "Name": "Currency API",
           "Version": "v1",
-          "Url": "http://currencymanagement.api:5001/swagger/v1/swagger.json"
+          "Url": "http://currencymanagementapi-app-service:5001/swagger/v1/swagger.json"
         }
       ]
     },
@@ -307,7 +307,7 @@
         {
           "Name": "Finance API",
           "Version": "v1",
-          "Url": "http://financemanagement.api:5002/swagger/v1/swagger.json"
+          "Url": "http://financemanagementapi-app-service:5002/swagger/v1/swagger.json"
         }
       ]
     }
