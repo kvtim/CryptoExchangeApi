@@ -45,12 +45,13 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{2C9A9C0F-DB77-4FEC-A649-04A08D1A7F72}"
 	ProjectSection(SolutionItems) = preProject
-		deployment-apigateway.yaml = deployment-apigateway.yaml
-		deployment-currency-api.yaml = deployment-currency-api.yaml
-		deployment-finance-api.yaml = deployment-finance-api.yaml
-		deployment-postgres.yaml = deployment-postgres.yaml
-		deployment-rabbitmq.yaml = deployment-rabbitmq.yaml
-		deployment-user-api.yaml = deployment-user-api.yaml
+		k8s\deployment-apigateway.yaml = k8s\deployment-apigateway.yaml
+		k8s\deployment-currency-api.yaml = k8s\deployment-currency-api.yaml
+		k8s\deployment-finance-api.yaml = k8s\deployment-finance-api.yaml
+		k8s\deployment-gateway-api.yaml = k8s\deployment-gateway-api.yaml
+		k8s\deployment-postgres.yaml = k8s\deployment-postgres.yaml
+		k8s\deployment-rabbitmq.yaml = k8s\deployment-rabbitmq.yaml
+		k8s\deployment-user-api.yaml = k8s\deployment-user-api.yaml
 	EndProjectSection
 EndProject
 Global

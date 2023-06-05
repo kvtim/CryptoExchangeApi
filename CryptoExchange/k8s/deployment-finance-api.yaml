@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: currencymanagementapi-app
+  name: financemanagementapi-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: currencymanagementapi-app
+      app: financemanagementapi-app
   template:
     metadata:
       labels:
-        app: currencymanagementapi-app
+        app: financemanagementapi-app
     spec:
       containers:
-        - image: kvtim/currencymanagementapi:latest
-          name: currencymanagementapi-app
+        - image: kvtim/financemanagementapi:latest
+          name: financemanagementapi-app
           ports:
-          - containerPort: 5001
+          - containerPort: 5002
           env:
           - name: ASPNETCORE_ENVIRONMENT
             value: "Development"
           - name: ASPNETCORE_URLS
-            value: "http://+:5001"
+            value: "http://+:5002"
           resources:
             requests:
               cpu: 100m
@@ -35,11 +35,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: currencymanagementapi-app-service
+  name: financemanagementapi-app-service
 spec:
   type: LoadBalancer
   ports:
-  - port: 5001
-    targetPort: 5001
+  - port: 5002
+    targetPort: 5002
   selector:
-   app: currencymanagementapi-app
+   app: financemanagementapi-app
