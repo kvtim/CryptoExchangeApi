@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apigateway-app
+  template:
+    metadata:
+      labels:
+        app: apigateway-app
+    spec:
+      containers:
+        - image: kvtim/apigateway:latest
+          name: apigateway-app
+          ports:
+          - containerPort: 5004
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Development"
+          - name: ASPNETCORE_URLS
+            value: "http://+:5004"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: apigateway-app-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5004
+    targetPort: 5004
+  selector:
+   app: apigateway-app
