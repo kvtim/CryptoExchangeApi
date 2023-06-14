@@ -2,7 +2,9 @@
 using FinanceManagement.Core.Dtos.Transaction;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
+using FinanceManagement.Data.Logger;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -17,11 +19,15 @@ namespace FinanceManagement.Data.Transactions.Queries.GetUserTransactions
     {
         private readonly ITransactionRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IFinanceLogger _logger;
 
-        public GetUserTransactionsQueryHandler(ITransactionRepository repository, IMapper mapper)
+        public GetUserTransactionsQueryHandler(ITransactionRepository repository, 
+            IMapper mapper,
+            IFinanceLogger financeLogger)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = financeLogger;
         }
 
         public async Task<Result<IEnumerable<TransactionDto>>> Handle(
@@ -31,6 +37,11 @@ namespace FinanceManagement.Data.Transactions.Queries.GetUserTransactions
 
             if (!transactions.Any())
             {
+                await _logger.AddOrUpdateLog(
+                   LogType.Exception,
+                   $"Transactions of user {request.UserId} not found",
+                   DateTime.Now);
+
                 return Result.Failure(ErrorType.NotFound, "Transactions not found");
             }
 

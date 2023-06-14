@@ -3,6 +3,7 @@ using FinanceManagement.Core.Dtos.Transaction;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
+using FinanceManagement.Data.Logger;
 using FinanceManagement.Data.Transactions.Commands.CreateTransaction;
 using FinanceManagement.Data.Transactions.Commands.DeleteTransaction;
 using FinanceManagement.Data.Transactions.Commands.UpdateTransaction;

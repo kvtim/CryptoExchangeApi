@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
+using FinanceManagement.Data.Logger;
 using FinanceManagement.Data.Wallets.Queries.GetWalletList;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +20,14 @@ namespace FinanceManagement.Data.Wallets.Queries.GetUserWallets
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IFinanceLogger _logger;
 
-        public GetUserWalletsQueryHandler(IWalletRepository repository, IMapper mapper)
+        public GetUserWalletsQueryHandler(IWalletRepository repository, IMapper mapper,
+            IFinanceLogger financeLogger)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = financeLogger;
         }
 
         public async Task<Result<IEnumerable<WalletDto>>> Handle(GetUserWalletsQuery request, CancellationToken cancellationToken)
@@ -31,6 +36,10 @@ namespace FinanceManagement.Data.Wallets.Queries.GetUserWallets
 
             if (!wallets.Any())
             {
+                await _logger.AddOrUpdateLog(
+                    LogType.Exception,
+                    $"Wallets of user {request.UserId} not found",
+                    DateTime.Now);
                 return Result.Failure(ErrorType.NotFound, "Wallets not found");
             }
 

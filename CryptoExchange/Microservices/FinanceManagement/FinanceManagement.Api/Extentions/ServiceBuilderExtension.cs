@@ -45,6 +45,8 @@ namespace FinanceManagement.Api.Extensions
 
             services.AddScoped<CreateNewUserWalletConsumer>();
 
+            services.ConfigureElasticSearch(configuration);
+
             services.ConfigureSwagger();
         }
     }
