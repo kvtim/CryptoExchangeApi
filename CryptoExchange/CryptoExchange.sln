@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{2C9A9C0F-DB7
 	ProjectSection(SolutionItems) = preProject
 		k8s\deployment-apigateway.yaml = k8s\deployment-apigateway.yaml
 		k8s\deployment-currency-api.yaml = k8s\deployment-currency-api.yaml
+		deployment-elasticsearch.yaml = deployment-elasticsearch.yaml
 		k8s\deployment-finance-api.yaml = k8s\deployment-finance-api.yaml
 		k8s\deployment-gateway-api.yaml = k8s\deployment-gateway-api.yaml
 		k8s\deployment-postgres.yaml = k8s\deployment-postgres.yaml

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.Logger;
+using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
+using FinanceManagement.Data.Logger;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,11 +19,14 @@ namespace FinanceManagement.Data.Wallets.Commands.UpdateWallet
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IFinanceLogger _logger;
 
-        public UpdateWalletCommandHandler(IWalletRepository repository, IMapper mapper)
+        public UpdateWalletCommandHandler(IWalletRepository repository, IMapper mapper,
+            IFinanceLogger financeLogger)
         {
             _repository = repository;
             _mapper = mapper;
+            _logger = financeLogger;
         }
 
         public async Task<Result<WalletDto>> Handle(UpdateWalletCommand request, CancellationToken cancellationToken)
@@ -29,6 +35,11 @@ namespace FinanceManagement.Data.Wallets.Commands.UpdateWallet
 
             if (wallet == null)
             {
+                await _logger.AddOrUpdateLog(
+                    LogType.Exception,
+                    $"Wallet {request.Id} not found ",
+                    DateTime.Now);
+
                 return Result.Failure(ErrorType.NotFound, "Wallet not found");
             }
 
@@ -36,6 +47,11 @@ namespace FinanceManagement.Data.Wallets.Commands.UpdateWallet
 
             await _repository.UpdateAsync(wallet);
             await _repository.SaveChangesAsync();
+
+            await _logger.AddOrUpdateLog(
+               LogType.Updation,
+               $"Wallet {request.Id} updated",
+               DateTime.Now);
 
             return Result.Ok(_mapper.Map<WalletDto>(wallet));
         }

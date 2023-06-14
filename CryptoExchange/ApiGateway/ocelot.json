@@ -213,6 +213,71 @@
         }
       ]
     },
+    {
+      "UpstreamPathTemplate": "/gateway/Logger/get-all-logs",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Logger/get-all-logs",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "FinanceAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "financemanagementapi-app-service",
+          "Port": 5002
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Logger/get-logs-by-type",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Logger/get-logs-by-type",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "FinanceAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "financemanagementapi-app-service",
+          "Port": 5002
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Logger/get-logs-by-date",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Logger/get-logs-by-date",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "FinanceAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "financemanagementapi-app-service",
+          "Port": 5002
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Logger/get-logs-by-string",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/Logger/get-logs-by-string",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "FinanceAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "financemanagementapi-app-service",
+          "Port": 5002
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Logger/remove-all-logs",
+      "UpstreamHttpMethod": [ "Delete" ],
+      "DownstreamPathTemplate": "/api/Logger/remove-all-logs",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "FinanceAPI",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "financemanagementapi-app-service",
+          "Port": 5002
+        }
+      ]
+    },
     //User API
     {
       "UpstreamPathTemplate": "/gateway/Users/registration",
