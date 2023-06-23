@@ -9,5 +9,6 @@ namespace EventBus.Messages.Common
     public static class EventBusConstants
     {
         public const string CreateNewUserWallet = "newuserwallet-queue";
+        public const string CreateNewLog = "newlog-queue";
     }
 }

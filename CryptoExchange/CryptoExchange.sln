@@ -55,6 +55,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{2C9A9C0F-DB7
 		k8s\deployment-user-api.yaml = k8s\deployment-user-api.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logger", "Logger", "{92F0FFE5-ABEA-4CAA-9697-0474215630E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Microservices\Logger\Logger\Logger.csproj", "{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +121,10 @@ Global
 		{B4E7621A-BACB-4D46-BB85-27324EA7BC99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4E7621A-BACB-4D46-BB85-27324EA7BC99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4E7621A-BACB-4D46-BB85-27324EA7BC99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +146,8 @@ Global
 		{CFD1CA15-E675-4840-B6AD-448413777288} = {79C731E7-9876-4A81-9F1F-B19FB2906570}
 		{869E98C7-BE7B-43AD-9A8D-05693CBB33E8} = {CC0FEC21-7EA7-4555-9E03-E9F48BC56D8E}
 		{7B50FC26-2E0B-4BFA-9A84-ADAD0986B523} = {869E98C7-BE7B-43AD-9A8D-05693CBB33E8}
+		{92F0FFE5-ABEA-4CAA-9697-0474215630E0} = {B0C13ABA-C5E6-4D81-91F9-1BDF2BE809BE}
+		{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA} = {92F0FFE5-ABEA-4CAA-9697-0474215630E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5872517A-CEDD-49A3-80B2-FE16C83C18EE}

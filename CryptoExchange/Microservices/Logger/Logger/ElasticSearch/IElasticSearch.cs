@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceManagement.Core.ElasticSearch
+namespace Logger.ElasticSearch
 {
     public interface IElasticSearch
     {

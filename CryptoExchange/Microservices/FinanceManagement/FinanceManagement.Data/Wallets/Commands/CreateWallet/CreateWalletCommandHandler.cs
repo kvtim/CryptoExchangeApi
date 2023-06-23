@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using EventBus.Messages.Events;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
-using FinanceManagement.Core.Logger;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
-using FinanceManagement.Data.Logger;
+using MassTransit;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -18,14 +18,16 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IFinanceLogger _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public CreateWalletCommandHandler(IWalletRepository repository, IMapper mapper,
-            IFinanceLogger financeLogger)
+        public CreateWalletCommandHandler(
+            IWalletRepository repository,
+            IMapper mapper,
+            IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = financeLogger;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Result<WalletDto>> Handle(CreateWalletCommand request,
@@ -37,22 +39,30 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
 
             if (wallet != null)
             {
-                await _logger.AddOrUpdateLog(
-                    LogType.Exception,
-                    $"Wallet {request.Wallet.Id}. " +
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Finance",
+                    LogType = "Exception",
+                    Message = $"Wallet {request.Wallet.Id}. " +
                     $"of user {request.Wallet.UserId} already exists",
-                    DateTime.Now);
+                    LogTime = DateTime.Now
+                });
+
                 return Result.Failure(ErrorType.BadRequest, "Wallet already exists");
             }
 
             await _repository.AddAsync(request.Wallet);
             await _repository.SaveChangesAsync();
 
-            await _logger.AddOrUpdateLog(
-                LogType.Addition,
-                $"Wallet {request.Wallet.Id}. " +
+            await _publishEndpoint.Publish(new CreateNewLogEvent()
+            {
+                Microservice = "Finance",
+                LogType = "Addition",
+                Message = $"Wallet {request.Wallet.Id}. " +
                 $"of user {request.Wallet.UserId} created",
-                DateTime.Now);
+                LogTime = DateTime.Now
+            });
+
             return Result.Ok(_mapper.Map<WalletDto>(request.Wallet));
         }
     }

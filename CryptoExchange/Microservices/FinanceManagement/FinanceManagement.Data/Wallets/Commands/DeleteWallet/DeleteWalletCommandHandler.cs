@@ -1,8 +1,8 @@
-﻿using FinanceManagement.Core.ErrorHandling;
-using FinanceManagement.Core.Logger;
+﻿using EventBus.Messages.Events;
+using FinanceManagement.Core.ErrorHandling;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
-using FinanceManagement.Data.Logger;
+using MassTransit;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -15,13 +15,14 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
     public class DeleteWalletCommandHandler : IRequestHandler<DeleteWalletCommand, Result>
     {
         private readonly IWalletRepository _repository;
-        private readonly IFinanceLogger _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public DeleteWalletCommandHandler(IWalletRepository repository,
-            IFinanceLogger financeLogger)
+        public DeleteWalletCommandHandler(
+            IWalletRepository repository,
+            IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
-            _logger = financeLogger;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Result> Handle(DeleteWalletCommand request,
@@ -31,10 +32,13 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
 
             if (wallet == null)
             {
-                await _logger.AddOrUpdateLog(
-                    LogType.Exception,
-                    $"Wallet {request.Id} not found ",
-                    DateTime.Now);
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Finance",
+                    LogType = "Exception",
+                    Message = $"Wallet {request.Id} not found ",
+                    LogTime = DateTime.Now
+                });
 
                 return Result.Failure(ErrorType.NotFound, "Wallet not found");
             }
@@ -42,10 +46,13 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
             await _repository.RemoveAsync(wallet);
             await _repository.SaveChangesAsync();
 
-            await _logger.AddOrUpdateLog(
-                LogType.Deletion,
-                $"Wallet {request.Id} deleted",
-                DateTime.Now);
+            await _publishEndpoint.Publish(new CreateNewLogEvent()
+            {
+                Microservice = "Finance",
+                LogType = "Deletion",
+                Message = $"Wallet {request.Id} deleted",
+                LogTime = DateTime.Now
+            });
 
             return Result.Ok();
         }

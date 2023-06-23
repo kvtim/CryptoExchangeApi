@@ -10,7 +10,7 @@ namespace CurrencyManagement.Core.Services
     {
         Task<T> AddAsync(T entity);
         Task<T> UpdateAsync(T entity);
-        Task RemoveAsync(T entity);
+        Task RemoveAsync(int id);
 
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();

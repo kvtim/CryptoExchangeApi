@@ -1,11 +1,9 @@
 ﻿using Elasticsearch.Net;
-using FinanceManagement.Core.ElasticSearch;
-using FinanceManagement.Core.Logger;
-using FinanceManagement.Data.ElasticSearch;
-using FinanceManagement.Data.Logger;
+using Logger.ElasticSearch;
+using Logger.Logger;
 using Nest;
 
-namespace FinanceManagement.Api.Extensions
+namespace Logger.Extensions
 {
     public static class ElasticSearchExtension
     {
@@ -18,9 +16,9 @@ namespace FinanceManagement.Api.Extensions
             var client = new ElasticClient(settings);
             services.AddSingleton(client);
 
-            services.AddSingleton<IElasticSearch, ElasticSearch>();
+            services.AddSingleton<IElasticSearch, ElasticSearch.ElasticSearch>();
 
-            services.AddSingleton<IFinanceLogger, FinanceLogger>();
+            services.AddSingleton<IElasticLogger, ElasticLogger>();
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using EventBus.Messages.Events;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
-using FinanceManagement.Core.Logger;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
-using FinanceManagement.Data.Logger;
+using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,14 +19,16 @@ namespace FinanceManagement.Data.Wallets.Commands.UpdateWallet
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IFinanceLogger _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public UpdateWalletCommandHandler(IWalletRepository repository, IMapper mapper,
-            IFinanceLogger financeLogger)
+        public UpdateWalletCommandHandler(
+            IWalletRepository repository, 
+            IMapper mapper,
+            IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = financeLogger;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Result<WalletDto>> Handle(UpdateWalletCommand request, CancellationToken cancellationToken)
@@ -35,10 +37,13 @@ namespace FinanceManagement.Data.Wallets.Commands.UpdateWallet
 
             if (wallet == null)
             {
-                await _logger.AddOrUpdateLog(
-                    LogType.Exception,
-                    $"Wallet {request.Id} not found ",
-                    DateTime.Now);
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Finance",
+                    LogType = "Exception",
+                    Message = $"Wallet {request.Id} not found ",
+                    LogTime = DateTime.Now
+                });
 
                 return Result.Failure(ErrorType.NotFound, "Wallet not found");
             }
@@ -48,10 +53,13 @@ namespace FinanceManagement.Data.Wallets.Commands.UpdateWallet
             await _repository.UpdateAsync(wallet);
             await _repository.SaveChangesAsync();
 
-            await _logger.AddOrUpdateLog(
-               LogType.Updation,
-               $"Wallet {request.Id} updated",
-               DateTime.Now);
+            await _publishEndpoint.Publish(new CreateNewLogEvent()
+            {
+                Microservice = "Finance",
+                LogType = "Updation",
+                Message = $"Wallet {request.Id} updated",
+                LogTime = DateTime.Now
+            });
 
             return Result.Ok(_mapper.Map<WalletDto>(wallet));
         }

@@ -27,6 +27,12 @@ services:
       - "postgres"
       - "rabbitmq"
 
+  logger:
+    image: ${DOCKER_REGISTRY-}logger
+    build:
+      context: .
+      dockerfile: Microservices/Logger/Logger/Dockerfile
+
   apigateway:
     image: ${DOCKER_REGISTRY-}apigateway
     build:
@@ -36,6 +42,7 @@ services:
       - "currencymanagement.api"
       - "financemanagement.api"
       - "usermanagement.api"
+      - "logger"
 
   postgres:
     image: postgres
@@ -44,3 +51,7 @@ services:
   rabbitmq:
     image: rabbitmq:3.10.7-management
     container_name: rabbitmq
+
+  elasticsearch:
+    image: elasticsearch:7.16.2
+    container_name: elasticsearch

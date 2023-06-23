@@ -1,5 +1,4 @@
 ﻿using Elasticsearch.Net;
-using FinanceManagement.Core.ElasticSearch;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceManagement.Data.ElasticSearch
+namespace Logger.ElasticSearch
 {
     public class ElasticSearch : IElasticSearch
     {
