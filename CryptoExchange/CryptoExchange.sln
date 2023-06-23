@@ -47,9 +47,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{2C9A9C0F-DB7
 	ProjectSection(SolutionItems) = preProject
 		k8s\deployment-apigateway.yaml = k8s\deployment-apigateway.yaml
 		k8s\deployment-currency-api.yaml = k8s\deployment-currency-api.yaml
-		deployment-elasticsearch.yaml = deployment-elasticsearch.yaml
+		k8s\deployment-elasticsearch.yaml = k8s\deployment-elasticsearch.yaml
 		k8s\deployment-finance-api.yaml = k8s\deployment-finance-api.yaml
-		k8s\deployment-gateway-api.yaml = k8s\deployment-gateway-api.yaml
+		k8s\deployment-logger.yaml = k8s\deployment-logger.yaml
 		k8s\deployment-postgres.yaml = k8s\deployment-postgres.yaml
 		k8s\deployment-rabbitmq.yaml = k8s\deployment-rabbitmq.yaml
 		k8s\deployment-user-api.yaml = k8s\deployment-user-api.yaml
@@ -57,7 +57,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{2C9A9C0F-DB7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logger", "Logger", "{92F0FFE5-ABEA-4CAA-9697-0474215630E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Microservices\Logger\Logger\Logger.csproj", "{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logger", "Microservices\Logger\Logger\Logger.csproj", "{EA927AC9-2F09-4EB6-A6C4-84E89489FBAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

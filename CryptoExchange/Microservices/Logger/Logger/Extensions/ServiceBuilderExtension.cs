@@ -15,7 +15,9 @@ namespace Logger.Extensions
             this IServiceCollection services,
              ConfigurationManager configuration)
         {
-           
+            services.AddJWTAuthentication(configuration);
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
             services.ConfigureMassTransit(configuration);
 
             services.AddScoped<CreateNewLogConsumer>();

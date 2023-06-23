@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logger-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logger-app
+  template:
+    metadata:
+      labels:
+        app: logger-app
+    spec:
+      containers:
+        - image: kvtim/logger:latest
+          name: logger-app
+          ports:
+          - containerPort: 5005
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Development"
+          - name: ASPNETCORE_URLS
+            value: "http://+:5005"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: logger-app-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5005
+    targetPort: 5005
+  selector:
+   app: logger-app
