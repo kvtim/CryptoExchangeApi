@@ -25,8 +25,6 @@ namespace Logger.Logger
             string message,
             DateTime dateTime)
         {
-            // check log type
-
             return await _elasticsearch.AddOrUpdate(
                 new Log
                 {
@@ -41,11 +39,6 @@ namespace Logger.Logger
         {
             var logs = await _elasticsearch.GetAll<Log>();
 
-            if (logs == null || !logs.Any())
-            {
-                //return Result.Failure(ErrorType.NotFound, "Logs not found");
-            }
-
             return logs;
         }
 
@@ -59,34 +52,17 @@ namespace Logger.Logger
                     Value = microservice
                 });
 
-            if (logs == null || !logs.Any())
-            {
-                //return Result.Failure(ErrorType.NotFound, "Logs not found");
-            }
-
             return logs;
         }
 
         public async Task<List<Log>> GetLogsByType(string logType)
         {
-            //logType = logType.ToLower();
-            //if (!Enum.GetValues(typeof(LogType)).Cast<LogType>()
-            //    .ToList().Any(t => t.ToString().ToLower() == logType))
-            //{
-            //    //return Result.Failure(ErrorType.NotFound, "Logs not found");
-            //}
-
             var logs = await _elasticsearch.Query<Log>(
                 new TermQuery()
                 {
                     Field = "logType",
                     Value = logType
                 });
-
-            if (logs == null || !logs.Any())
-            {
-                //return Result.Failure(ErrorType.NotFound, "Logs not found");
-            }
 
             return logs;
         }
@@ -103,11 +79,6 @@ namespace Logger.Logger
 
             var logs = await _elasticsearch.Query<Log>(rangeQuery);
 
-            if (logs == null || !logs.Any())
-            {
-                //return Result.Failure(ErrorType.NotFound, "Logs not found");
-            }
-
             return logs;
         }
 
@@ -120,11 +91,6 @@ namespace Logger.Logger
             };
 
             var logs = await _elasticsearch.Query<Log>(stringQuery);
-
-            if (logs == null || !logs.Any())
-            {
-                //return Result.Failure(ErrorType.NotFound, "Logs not found");
-            }
 
             return logs;
         }
