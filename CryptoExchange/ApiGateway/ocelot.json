@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5004"
+    "BaseUrl": "https://localhost:5005"
   },
   "Routes": [
     // Currency API
@@ -289,7 +289,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "logger-app-service",
-          "Port": 5005
+          "Port": 5004
         }
       ]
     },
@@ -302,7 +302,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "logger-app-service",
-          "Port": 5005
+          "Port": 5004
         }
       ]
     },
@@ -315,7 +315,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "logger-app-service",
-          "Port": 5005
+          "Port": 5004
         }
       ]
     },
@@ -328,7 +328,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "logger-app-service",
-          "Port": 5005
+          "Port": 5004
         }
       ]
     },
@@ -341,7 +341,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "logger-app-service",
-          "Port": 5005
+          "Port": 5004
         }
       ]
     },
@@ -354,7 +354,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "logger-app-service",
-          "Port": 5005
+          "Port": 5004
         }
       ]
     }
@@ -396,7 +396,7 @@
         {
           "Name": "Logger API",
           "Version": "v1",
-          "Url": "http://logger-app-service:5005/swagger/v1/swagger.json"
+          "Url": "http://logger-app-service:5004/swagger/v1/swagger.json"
         }
       ]
     }

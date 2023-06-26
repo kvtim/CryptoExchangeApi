@@ -16,12 +16,12 @@ spec:
         - image: kvtim/logger:latest
           name: logger-app
           ports:
-          - containerPort: 5005
+          - containerPort: 5004
           env:
           - name: ASPNETCORE_ENVIRONMENT
             value: "Development"
           - name: ASPNETCORE_URLS
-            value: "http://+:5005"
+            value: "http://+:5004"
           resources:
             requests:
               cpu: 100m
@@ -39,7 +39,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 5005
-    targetPort: 5005
+  - port: 5004
+    targetPort: 5004
   selector:
    app: logger-app
