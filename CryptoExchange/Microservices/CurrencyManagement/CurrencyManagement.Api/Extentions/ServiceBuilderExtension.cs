@@ -7,6 +7,7 @@ using CurrencyManagement.Data.BigQuery;
 using CurrencyManagement.Data.Repositories;
 using CurrencyManagement.Data.UnitOfWork;
 using CurrencyManagement.Services.Services;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -47,6 +48,11 @@ namespace CurrencyManagement.Api.Extensions
 
             services.AddControllersWithJsonConfiguration();
 
+            services.AddMassTransit(config => {
+                config.UsingRabbitMq((ctx, cfg) => {
+                    cfg.Host(configuration["EventBusSettings:HostAddress"]);
+                });
+            });
             services.AddEndpointsApiExplorer();
 
             services.ConfigureSwagger();

@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: currencymanagementapi-app
+  name: logger-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: currencymanagementapi-app
+      app: logger-app
   template:
     metadata:
       labels:
-        app: currencymanagementapi-app
+        app: logger-app
     spec:
       containers:
-        - image: kvtim/currencymanagementapi:latest
-          name: currencymanagementapi-app
+        - image: kvtim/logger:latest
+          name: logger-app
           ports:
-          - containerPort: 5001
+          - containerPort: 5004
           env:
           - name: ASPNETCORE_ENVIRONMENT
             value: "Development"
           - name: ASPNETCORE_URLS
-            value: "http://+:5001"
+            value: "http://+:5004"
           resources:
             requests:
               cpu: 100m
@@ -35,11 +35,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: currencymanagementapi-app-service
+  name: logger-app-service
 spec:
   type: LoadBalancer
   ports:
-  - port: 5001
-    targetPort: 5001
+  - port: 5004
+    targetPort: 5004
   selector:
-   app: currencymanagementapi-app
+   app: logger-app

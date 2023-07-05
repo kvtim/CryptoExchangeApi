@@ -28,11 +28,6 @@ namespace CurrencyManagement.Api.Controllers
         {
             var currencies = await _currencyService.GetAllAsync();
 
-            if (!currencies.Any())
-            {
-                throw new KeyNotFoundException("Currency not found");
-            }
-
             return Ok(_mapper.Map<IEnumerable<CurrencyDto>>(currencies));
         }
 
@@ -42,11 +37,6 @@ namespace CurrencyManagement.Api.Controllers
         {
             var currencies = await _currencyService.GetAllWithDimensionAsync();
 
-            if (!currencies.Any())
-            {
-                throw new KeyNotFoundException("Currency not found");
-            }
-
             return Ok(_mapper.Map<IEnumerable<CurrencyWithDimensionDto>>(currencies));
         }
 
@@ -54,11 +44,6 @@ namespace CurrencyManagement.Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var currency = await _currencyService.GetByIdAsync(id);
-
-            if (currency == null)
-            {
-                throw new KeyNotFoundException("Currency not found");
-            }
 
             return Ok(_mapper.Map<CurrencyDto>(currency));
         }
@@ -68,11 +53,6 @@ namespace CurrencyManagement.Api.Controllers
         public async Task<IActionResult> GetByIdlWithDimension(int id)
         {
             var currency = await _currencyService.GetByIdlWithDimensionAsync(id);
-
-            if (currency == null)
-            {
-                throw new KeyNotFoundException("Currency not found");
-            }
 
             return Ok(_mapper.Map<CurrencyWithDimensionDto>(currency));
         }
@@ -124,14 +104,7 @@ namespace CurrencyManagement.Api.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var currency = await _currencyService.GetByIdAsync(id);
-
-            if (currency == null)
-            {
-                throw new KeyNotFoundException("Currency not found");
-            }
-
-            await _currencyService.RemoveAsync(currency);
+            await _currencyService.RemoveAsync(id);
             return Ok();
         }
 

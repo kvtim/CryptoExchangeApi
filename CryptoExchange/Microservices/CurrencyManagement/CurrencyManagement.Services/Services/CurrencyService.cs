@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using CurrencyManagement.Data.Exceptions;
 using CurrencyManagement.Core.BiqQuery;
+using MassTransit;
+using EventBus.Messages.Events;
+using Google.Apis.Bigquery.v2.Data;
 
 namespace CurrencyManagement.Services.Services
 {
@@ -17,15 +20,35 @@ namespace CurrencyManagement.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBigQuery _bigQuery;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public CurrencyService(IUnitOfWork unitOfWork, IBigQuery bigQuery)
+        public CurrencyService(
+            IUnitOfWork unitOfWork, 
+            IBigQuery bigQuery,
+            IPublishEndpoint publishEndpoint)
         {
             _unitOfWork = unitOfWork;
             _bigQuery = bigQuery;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Currency> AddAsync(Currency entity)
         {
+            var currency = await _unitOfWork.CurrencyRepository.GetByIdAsync(entity.Id);
+
+            if (currency != null)
+            {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currency {entity.Id} already exists.",
+                    LogTime = DateTime.Now
+                });
+
+                throw new KeyNotFoundException($"Currency {entity.Id} already exists.");
+            }
+
             entity.CurrencyDimensions = new List<CurrencyDimension>
             {
                 new CurrencyDimension()
@@ -36,34 +59,112 @@ namespace CurrencyManagement.Services.Services
             await _unitOfWork.CurrencyRepository.AddAsync(entity);
             await _unitOfWork.CommitAsync();
 
-            await _bigQuery.InsertCurrencyDimension(entity.CurrencyDimensions.First());
+            await _publishEndpoint.Publish(new CreateNewLogEvent()
+            {
+                Microservice = "Currency",
+                LogType = "Addition",
+                Message = $"Currency {entity.Id} created.",
+                LogTime = DateTime.Now
+            });
+
+            //await _bigQuery.InsertCurrencyDimension(entity.CurrencyDimensions.First());
             return entity;
         }
 
         public async Task<IEnumerable<Currency>> GetAllAsync()
         {
-            return await _unitOfWork.CurrencyRepository.GetAllAsync();
+            var currencies = await _unitOfWork.CurrencyRepository.GetAllAsync();
+
+            if (!currencies.Any())
+            {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currencies not found.",
+                    LogTime = DateTime.Now
+                });
+
+                throw new KeyNotFoundException("Currencies not found");
+            }
+
+            return currencies;
         }
 
         public async Task<IEnumerable<Currency>> GetAllWithDimensionAsync()
         {
-            return await _unitOfWork.CurrencyRepository.GetAllWithDimensionAsync();
+            var currencies = await _unitOfWork.CurrencyRepository.GetAllWithDimensionAsync();
+
+            if (!currencies.Any())
+            {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currencies not found.",
+                    LogTime = DateTime.Now
+                });
+
+                throw new KeyNotFoundException("Currencies not found");
+            }
+
+            return currencies;
         }
 
         public async Task<Currency> GetByIdAsync(int id)
         {
-            return await _unitOfWork.CurrencyRepository.GetByIdAsync(id);
+            var currency = await _unitOfWork.CurrencyRepository.GetByIdAsync(id);
+
+            if (currency == null)
+            {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currency {id} not found.",
+                    LogTime = DateTime.Now
+                });
+
+                throw new KeyNotFoundException($"Currency {id} not found.");
+            }
+
+            return currency;
         }
 
         public async Task<Currency> GetByIdlWithDimensionAsync(int id)
         {
-            return await _unitOfWork.CurrencyRepository.GetByIdWithDimensionAsync(id);
+            var currency = await _unitOfWork.CurrencyRepository.GetByIdWithDimensionAsync(id);
+
+            if (currency == null)
+            {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currency {id} not found.",
+                    LogTime = DateTime.Now
+                });
+
+                throw new KeyNotFoundException($"Currency {id} not found");
+            }
+
+            return currency;
         }
 
-        public async Task RemoveAsync(Currency entity)
+        public async Task RemoveAsync(int id)
         {
-            await _unitOfWork.CurrencyRepository.RemoveAsync(entity);
+            var currency = await GetByIdAsync(id);
+
+            await _unitOfWork.CurrencyRepository.RemoveAsync(currency);
             await _unitOfWork.CommitAsync();
+
+            await _publishEndpoint.Publish(new CreateNewLogEvent()
+            {
+                Microservice = "Currency",
+                LogType = "Deletion",
+                Message = $"Currency {currency.Id} deleted.",
+                LogTime = DateTime.Now
+            });
         }
 
         public async Task<Currency> UpdateAsync(Currency entity)
@@ -74,6 +175,14 @@ namespace CurrencyManagement.Services.Services
 
             await _unitOfWork.CommitAsync();
 
+            await _publishEndpoint.Publish(new CreateNewLogEvent()
+            {
+                Microservice = "Currency",
+                LogType = "Updation",
+                Message = $"Currency {entity.Id} updated.",
+                LogTime = DateTime.Now
+            });
+
             return entity;
         }
 
@@ -83,11 +192,27 @@ namespace CurrencyManagement.Services.Services
 
             if (currency == null)
             {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currency {id} not found.",
+                    LogTime = DateTime.Now
+                });
+
                 throw new KeyNotFoundException("Currency not found");
             }
 
             if (currency.CurrentPriceInUSD <= -increasePrice)
             {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currency {id} price less than zero.",
+                    LogTime = DateTime.Now
+                });
+
                 throw new CurrencyPriceLessThanZeroException(currency.Name);
             }
 
@@ -116,6 +241,14 @@ namespace CurrencyManagement.Services.Services
 
             if (updatedEntity == null)
             {
+                await _publishEndpoint.Publish(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Exception",
+                    Message = $"Currency {entity.Id} not found.",
+                    LogTime = DateTime.Now
+                });
+
                 throw new KeyNotFoundException("Currency not found");
             }
 
