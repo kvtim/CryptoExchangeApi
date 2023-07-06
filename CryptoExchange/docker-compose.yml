@@ -7,7 +7,14 @@ services:
       context: .
       dockerfile: Microservices/CurrencyManagement/CurrencyManagement.Api/Dockerfile
     depends_on:
-      - "postgres"
+      postgres:
+        condition: service_healthy
+      cassandra:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
   financemanagement.api:
     image: ${DOCKER_REGISTRY-}financemanagementapi
@@ -15,8 +22,10 @@ services:
       context: .
       dockerfile: Microservices/FinanceManagement/FinanceManagement.Api/Dockerfile
     depends_on:
-      - "postgres"
-      - "rabbitmq"
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   usermanagement.api:
     image: ${DOCKER_REGISTRY-}usermanagementapi
@@ -24,8 +33,10 @@ services:
       context: .
       dockerfile: Microservices/UserManagement/UserManagement.Api/UserManagement.Api/Dockerfile
     depends_on:
-      - "postgres"
-      - "rabbitmq"
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   logger:
     image: ${DOCKER_REGISTRY-}logger
@@ -55,3 +66,7 @@ services:
   elasticsearch:
     image: elasticsearch:7.16.2
     container_name: elasticsearch
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra

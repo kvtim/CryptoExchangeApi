@@ -1,9 +1,12 @@
+using CurrencyManagement.Api.Extentions;
 using CurrencyManagement.Core.BiqQuery;
+using CurrencyManagement.Core.Cassandra;
 using CurrencyManagement.Core.Repositories;
 using CurrencyManagement.Core.Services;
 using CurrencyManagement.Core.UnitOfWork;
 using CurrencyManagement.Data;
 using CurrencyManagement.Data.BigQuery;
+using CurrencyManagement.Data.Cassandra;
 using CurrencyManagement.Data.Repositories;
 using CurrencyManagement.Data.UnitOfWork;
 using CurrencyManagement.Services.Services;
@@ -45,6 +48,12 @@ namespace CurrencyManagement.Api.Extensions
             services.AddScoped<IBigQuery, BigQuery>();
 
             services.AddScoped<IAnalysisService, AnalysisService>();
+
+            services.ConfigureCassandra();
+
+            services.AddScoped<ICassandraRepository, CassandraRepository>();
+            
+            services.AddScoped<ICassandraService, CassandraService>();
 
             services.AddControllersWithJsonConfiguration();
 
