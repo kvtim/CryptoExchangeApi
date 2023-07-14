@@ -1,4 +1,8 @@
+using EventBus.Messages.Common;
 using Logger.EventBusConsumer;
+using Logger.KafkaConsumer;
+using Logger.Logger;
+using Logger.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
@@ -23,6 +27,19 @@ namespace Logger.Extensions
             services.AddScoped<CreateNewLogConsumer>();
 
             services.ConfigureElasticSearch(configuration);
+
+            var provider = services.BuildServiceProvider();
+            var elasticLogger = provider.GetService<IElasticLogger>();
+            
+            KafkaConsumerHandler currencyConsumer = new KafkaConsumerHandler(
+                configuration["KafkaSettings:HostAddress"],
+                "currency_logs_group",
+                elasticLogger
+                );
+
+            Task.Run(() => currencyConsumer.StartAsync(TopicNamesConstants.CurrencyLogsTopic));
+            Task.Run(() => currencyConsumer.StartAsync(TopicNamesConstants.FinanceLogsTopic));
+            Task.Run(() => currencyConsumer.StartAsync(TopicNamesConstants.UserLogsTopic));
 
             services.ConfigureSwagger();
         }

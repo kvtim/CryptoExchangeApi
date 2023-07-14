@@ -11,6 +11,8 @@ using UserManagement.Core.UnitOfWork;
 using UserManagement.Core.ErrorHandling;
 using MassTransit;
 using EventBus.Messages.Events;
+using EventBus.Messages.Common;
+using System.Text.Json;
 
 namespace UserManagement.Services.Services
 {
@@ -18,16 +20,16 @@ namespace UserManagement.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHasher _hasher;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
         public UserService(
             IUnitOfWork unitOfWork,
             IHasher hasher, 
-            IPublishEndpoint publishEndpoint)
+            IKafkaProducerService kafkaProducerService)
         {
             _unitOfWork = unitOfWork;
             _hasher = hasher;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<User> AddAsync(User user)
@@ -43,13 +45,15 @@ namespace UserManagement.Services.Services
             var users = await _unitOfWork.UserRepository.GetAllAsync();
             if (users == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"Users not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Exception",
+                        Message = $"Users not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.NotFound, "Users not found");
             }
@@ -62,13 +66,15 @@ namespace UserManagement.Services.Services
 
             if (user == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"User {id} not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Exception",
+                        Message = $"User {id} not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.NotFound ,"User not found");
             }
@@ -81,13 +87,15 @@ namespace UserManagement.Services.Services
 
             if (user == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"User {userName} not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Exception",
+                        Message = $"User {userName} not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.NotFound, "User not found");
             }
@@ -99,13 +107,15 @@ namespace UserManagement.Services.Services
             await _unitOfWork.UserRepository.RemoveAsync(entity);
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "User",
-                LogType = "Deletion",
-                Message = $"User {entity.Id} deleted.",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Deletion",
+                        Message = $"User {entity.Id} deleted.",
+                        LogTime = DateTime.Now
+                    }));
         }
 
         public async Task<User> UpdateAsync(User entity)
@@ -113,13 +123,15 @@ namespace UserManagement.Services.Services
             await _unitOfWork.UserRepository.UpdateAsync(entity);
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "User",
-                LogType = "Updation",
-                Message = $"User {entity.Id} updated.",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.UserLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "User",
+                       LogType = "Updation",
+                       Message = $"User {entity.Id} updated.",
+                       LogTime = DateTime.Now
+                   }));
 
             return entity;
         }
@@ -139,26 +151,30 @@ namespace UserManagement.Services.Services
             
             if (!confirmPassword)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"User {userResult.Value.Id} entered wrong password.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.UserLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "User",
+                       LogType = "Exception",
+                       Message = $"User {userResult.Value.Id} entered wrong password.",
+                       LogTime = DateTime.Now
+                   }));
 
                 return Result.Failure(ErrorType.BadRequest ,"Wrong old password");
             }
 
             userResult.Value.Password = _hasher.Hash(changePasswordDto.NewPassword);
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "User",
-                LogType = "Updation",
-                Message = $"User {userResult.Value.Id} changed password.",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.UserLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "User",
+                       LogType = "Updation",
+                       Message = $"User {userResult.Value.Id} changed password.",
+                       LogTime = DateTime.Now
+                   })); 
 
             return Result.Ok(await UpdateAsync(userResult.Value));
         }
@@ -176,13 +192,15 @@ namespace UserManagement.Services.Services
 
             if (!isUserAdmin && userResult.Value.UserName != userName)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"User {userResult.Value.Id} enter wrong user.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.UserLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "User",
+                       LogType = "Exception",
+                       Message = $"User {userResult.Value.Id} enter wrong user.",
+                       LogTime = DateTime.Now
+                   }));
 
                 return Result.Failure(ErrorType.BadRequest, "It isn't you");
             }

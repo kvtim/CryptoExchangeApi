@@ -55,13 +55,10 @@ namespace CurrencyManagement.Api.Extensions
             
             services.AddScoped<ICassandraService, CassandraService>();
 
+            services.AddScoped<IKafkaProducerService, KafkaProducerService>();
+
             services.AddControllersWithJsonConfiguration();
 
-            services.AddMassTransit(config => {
-                config.UsingRabbitMq((ctx, cfg) => {
-                    cfg.Host(configuration["EventBusSettings:HostAddress"]);
-                });
-            });
             services.AddEndpointsApiExplorer();
 
             services.ConfigureSwagger();
