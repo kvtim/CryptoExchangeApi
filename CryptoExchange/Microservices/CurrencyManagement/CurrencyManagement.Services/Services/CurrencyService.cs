@@ -13,6 +13,8 @@ using CurrencyManagement.Core.BiqQuery;
 using MassTransit;
 using EventBus.Messages.Events;
 using Google.Apis.Bigquery.v2.Data;
+using System.Text.Json;
+using EventBus.Messages.Common;
 
 namespace CurrencyManagement.Services.Services
 {
@@ -20,16 +22,16 @@ namespace CurrencyManagement.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBigQuery _bigQuery;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
         public CurrencyService(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             IBigQuery bigQuery,
-            IPublishEndpoint publishEndpoint)
+            IKafkaProducerService kafkaProducerService)
         {
             _unitOfWork = unitOfWork;
             _bigQuery = bigQuery;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Currency> AddAsync(Currency entity)
@@ -38,13 +40,15 @@ namespace CurrencyManagement.Services.Services
 
             if (currency != null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currency {entity.Id} already exists.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.CurrencyLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Currency",
+                        LogType = "Exception",
+                        Message = $"Currency {entity.Id} already exists.",
+                        LogTime = DateTime.Now
+                    }));
 
                 throw new KeyNotFoundException($"Currency {entity.Id} already exists.");
             }
@@ -59,13 +63,24 @@ namespace CurrencyManagement.Services.Services
             await _unitOfWork.CurrencyRepository.AddAsync(entity);
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
+
+            var message = JsonSerializer.Serialize(new CreateNewLogEvent()
             {
                 Microservice = "Currency",
                 LogType = "Addition",
                 Message = $"Currency {entity.Id} created.",
                 LogTime = DateTime.Now
             });
+
+            await _kafkaProducerService.SendMessage(
+                TopicNamesConstants.CurrencyLogsTopic,
+                JsonSerializer.Serialize(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Addition",
+                    Message = $"Currency {entity.Id} created.",
+                    LogTime = DateTime.Now
+                }));
 
             //await _bigQuery.InsertCurrencyDimension(entity.CurrencyDimensions.First());
             return entity;
@@ -77,13 +92,15 @@ namespace CurrencyManagement.Services.Services
 
             if (!currencies.Any())
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currencies not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.CurrencyLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Currency",
+                        LogType = "Exception",
+                        Message = $"Currencies not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 throw new KeyNotFoundException("Currencies not found");
             }
@@ -97,13 +114,15 @@ namespace CurrencyManagement.Services.Services
 
             if (!currencies.Any())
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currencies not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.CurrencyLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Currency",
+                        LogType = "Exception",
+                        Message = $"Currencies not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 throw new KeyNotFoundException("Currencies not found");
             }
@@ -117,13 +136,15 @@ namespace CurrencyManagement.Services.Services
 
             if (currency == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currency {id} not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.CurrencyLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Currency",
+                        LogType = "Exception",
+                        Message = $"Currency {id} not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 throw new KeyNotFoundException($"Currency {id} not found.");
             }
@@ -137,13 +158,15 @@ namespace CurrencyManagement.Services.Services
 
             if (currency == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currency {id} not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.CurrencyLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "Currency",
+                       LogType = "Exception",
+                       Message = $"Currency {id} not found.",
+                       LogTime = DateTime.Now
+                   }));
 
                 throw new KeyNotFoundException($"Currency {id} not found");
             }
@@ -158,13 +181,15 @@ namespace CurrencyManagement.Services.Services
             await _unitOfWork.CurrencyRepository.RemoveAsync(currency);
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "Currency",
-                LogType = "Deletion",
-                Message = $"Currency {currency.Id} deleted.",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                TopicNamesConstants.CurrencyLogsTopic,
+                JsonSerializer.Serialize(new CreateNewLogEvent()
+                {
+                    Microservice = "Currency",
+                    LogType = "Deletion",
+                    Message = $"Currency {currency.Id} deleted.",
+                    LogTime = DateTime.Now
+                }));
         }
 
         public async Task<Currency> UpdateAsync(Currency entity)
@@ -175,13 +200,15 @@ namespace CurrencyManagement.Services.Services
 
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "Currency",
-                LogType = "Updation",
-                Message = $"Currency {entity.Id} updated.",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.CurrencyLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "Currency",
+                       LogType = "Updation",
+                       Message = $"Currency {entity.Id} updated.",
+                       LogTime = DateTime.Now
+                   }));
 
             return entity;
         }
@@ -192,26 +219,30 @@ namespace CurrencyManagement.Services.Services
 
             if (currency == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currency {id} not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.CurrencyLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "Currency",
+                       LogType = "Exception",
+                       Message = $"Currency {id} not found.",
+                       LogTime = DateTime.Now
+                   }));
 
                 throw new KeyNotFoundException("Currency not found");
             }
 
             if (currency.CurrentPriceInUSD <= -increasePrice)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currency {id} price less than zero.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.CurrencyLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "Currency",
+                       LogType = "Exception",
+                       Message = $"Currency {id} price less than zero.",
+                       LogTime = DateTime.Now
+                   }));
 
                 throw new CurrencyPriceLessThanZeroException(currency.Name);
             }
@@ -241,13 +272,15 @@ namespace CurrencyManagement.Services.Services
 
             if (updatedEntity == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Currency",
-                    LogType = "Exception",
-                    Message = $"Currency {entity.Id} not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                   TopicNamesConstants.CurrencyLogsTopic,
+                   JsonSerializer.Serialize(new CreateNewLogEvent()
+                   {
+                       Microservice = "Currency",
+                       LogType = "Exception",
+                       Message = $"Currency {entity.Id} not found.",
+                       LogTime = DateTime.Now
+                   }));
 
                 throw new KeyNotFoundException("Currency not found");
             }

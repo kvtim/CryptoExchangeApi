@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EventBus.Messages.Common;
 using EventBus.Messages.Events;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.KafkaService;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data.Wallets.Queries.GetWalletList;
@@ -11,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Wallets.Queries.GetAllWallets
@@ -20,14 +23,16 @@ namespace FinanceManagement.Data.Wallets.Queries.GetAllWallets
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
-        public GetAllWalletsQueryHandler(IWalletRepository repository, IMapper mapper,
-            IPublishEndpoint publishEndpoint)
+        public GetAllWalletsQueryHandler(
+            IWalletRepository repository, 
+            IMapper mapper,
+            IKafkaProducerService kafkaProducerService)
         {
             _repository = repository;
             _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Result<IEnumerable<WalletDto>>> Handle(GetAllWalletsQuery request, CancellationToken cancellationToken)
@@ -36,13 +41,15 @@ namespace FinanceManagement.Data.Wallets.Queries.GetAllWallets
 
             if (!wallets.Any())
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Finance",
-                    LogType = "Exception",
-                    Message = "Wallets not found.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Exception",
+                        Message = "Wallets not found.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.NotFound, "Wallets not found");
             }

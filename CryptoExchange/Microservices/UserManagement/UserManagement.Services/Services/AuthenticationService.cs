@@ -11,6 +11,8 @@ using UserManagement.Core.Dtos.User;
 using UserManagement.Core.ErrorHandling;
 using MassTransit;
 using EventBus.Messages.Events;
+using EventBus.Messages.Common;
+using System.Text.Json;
 
 namespace UserManagement.Services.Services
 {
@@ -19,19 +21,19 @@ namespace UserManagement.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJWTTokenService _tokenService;
         private readonly IHasher _hasher;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
         public AuthenticationService(
             IUnitOfWork unitOfWork,
             IJWTTokenService tokenService,
             IHasher hasher,
-            IPublishEndpoint publishEndpoint
+            IKafkaProducerService kafkaProducerService
         )
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _hasher = hasher;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Result<JWTToken>> Authentication(LoginUserDto loginUserDto)
@@ -40,13 +42,15 @@ namespace UserManagement.Services.Services
 
             if (user == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"Username {loginUserDto.UserName} is incorrect.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Exception",
+                        Message = $"Username {loginUserDto.UserName} is incorrect.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.BadRequest, "Username is incorrect");
             }
@@ -54,13 +58,15 @@ namespace UserManagement.Services.Services
             bool confirmPassword = _hasher.Verify(loginUserDto.Password, user.Password);
             if (!confirmPassword)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"Password is incorrect.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Exception",
+                        Message = $"Password is incorrect.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.BadRequest, "Password is incorrect");
             }

@@ -1,5 +1,7 @@
-﻿using EventBus.Messages.Events;
+﻿using EventBus.Messages.Common;
+using EventBus.Messages.Events;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.KafkaService;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
 using MassTransit;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
@@ -15,14 +18,14 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
     public class DeleteWalletCommandHandler : IRequestHandler<DeleteWalletCommand, Result>
     {
         private readonly IWalletRepository _repository;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
         public DeleteWalletCommandHandler(
             IWalletRepository repository,
-            IPublishEndpoint publishEndpoint)
+            IKafkaProducerService kafkaProducerService)
         {
             _repository = repository;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Result> Handle(DeleteWalletCommand request,
@@ -32,13 +35,15 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
 
             if (wallet == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Finance",
-                    LogType = "Exception",
-                    Message = $"Wallet {request.Id} not found ",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Exception",
+                        Message = $"Wallet {request.Id} not found ",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.NotFound, "Wallet not found");
             }
@@ -46,13 +51,15 @@ namespace FinanceManagement.Data.Wallets.Commands.DeleteWallet
             await _repository.RemoveAsync(wallet);
             await _repository.SaveChangesAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "Finance",
-                LogType = "Deletion",
-                Message = $"Wallet {request.Id} deleted",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Deletion",
+                        Message = $"Wallet {request.Id} deleted",
+                        LogTime = DateTime.Now
+                    }));
 
             return Result.Ok();
         }

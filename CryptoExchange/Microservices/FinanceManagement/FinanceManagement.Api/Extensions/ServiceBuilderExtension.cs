@@ -1,6 +1,8 @@
 using FinanceManagement.Api.EventBusConsumer;
+using FinanceManagement.Core.KafkaService;
 using FinanceManagement.Core.Repositories;
 using FinanceManagement.Data;
+using FinanceManagement.Data.KafkaService;
 using FinanceManagement.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,6 +45,8 @@ namespace FinanceManagement.Api.Extensions
             services.ConfigureMassTransit(configuration);
 
             services.AddScoped<CreateNewUserWalletConsumer>();
+
+            services.AddScoped<IKafkaProducerService, KafkaProducerService>();
 
             services.ConfigureSwagger();
         }

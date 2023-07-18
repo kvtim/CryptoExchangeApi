@@ -26,6 +26,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
 
   usermanagement.api:
     image: ${DOCKER_REGISTRY-}usermanagementapi
@@ -37,12 +39,19 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
 
   logger:
     image: ${DOCKER_REGISTRY-}logger
     build:
       context: .
       dockerfile: Microservices/Logger/Logger/Dockerfile
+    depends_on:
+      kafka:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
   apigateway:
     image: ${DOCKER_REGISTRY-}apigateway
@@ -70,3 +79,15 @@ services:
   cassandra:
     image: cassandra:latest
     container_name: cassandra
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    depends_on:
+      - "zookeeper"
+    
+

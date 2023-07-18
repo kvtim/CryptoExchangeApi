@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EventBus.Messages.Common;
 using EventBus.Messages.Events;
 using FinanceManagement.Core.Dtos.Wallet;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.KafkaService;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
 using MassTransit;
@@ -10,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
@@ -18,16 +21,16 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
     {
         private readonly IWalletRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
         public CreateWalletCommandHandler(
             IWalletRepository repository,
             IMapper mapper,
-            IPublishEndpoint publishEndpoint)
+            IKafkaProducerService kafkaProducerService)
         {
             _repository = repository;
             _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Result<WalletDto>> Handle(CreateWalletCommand request,
@@ -39,14 +42,16 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
 
             if (wallet != null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Finance",
-                    LogType = "Exception",
-                    Message = $"Wallet {request.Wallet.Id}. " +
-                    $"of user {request.Wallet.UserId} already exists",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Exception",
+                        Message = $"Wallet {request.Wallet.Id}. " +
+                        $"of user {request.Wallet.UserId} already exists",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.BadRequest, "Wallet already exists");
             }
@@ -54,14 +59,16 @@ namespace FinanceManagement.Data.Wallets.Commands.CreateWallet
             await _repository.AddAsync(request.Wallet);
             await _repository.SaveChangesAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "Finance",
-                LogType = "Addition",
-                Message = $"Wallet {request.Wallet.Id}. " +
-                $"of user {request.Wallet.UserId} created",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Addition",
+                        Message = $"Wallet {request.Wallet.Id}. " +
+                        $"of user {request.Wallet.UserId} created",
+                        LogTime = DateTime.Now
+                    }));
 
             return Result.Ok(_mapper.Map<WalletDto>(request.Wallet));
         }

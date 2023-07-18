@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EventBus.Messages.Common;
 using EventBus.Messages.Events;
 using FinanceManagement.Core.Dtos.Transaction;
 using FinanceManagement.Core.ErrorHandling;
+using FinanceManagement.Core.KafkaService;
 using FinanceManagement.Core.Models;
 using FinanceManagement.Core.Repositories;
 using MassTransit;
@@ -10,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
@@ -20,18 +23,18 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
         private readonly ITransactionRepository _repository;
         private readonly IWalletRepository _walletRepository;
         private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
+        IKafkaProducerService _kafkaProducerService;
 
         public CreateTransactionCommandHandler(
             ITransactionRepository repository,
             IWalletRepository walletRepository,
             IMapper mapper,
-            IPublishEndpoint publishEndpoint)
+            IKafkaProducerService kafkaProducerService)
         {
             _repository = repository;
             _walletRepository = walletRepository;
             _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Result<TransactionDto>> Handle(
@@ -40,14 +43,16 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
         {
             if (request.Transaction.FromCurrencyId == request.Transaction.NewCurrencyId)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Finance",
-                    LogType = "Exception",
-                    Message = $"User {request.Transaction.UserId}. " +
-                    $"Sending currency and new currency are the same",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Exception",
+                        Message = $"User {request.Transaction.UserId}. " +
+                        $"Sending currency and new currency are the same",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(
                     ErrorType.BadRequest,
@@ -68,13 +73,15 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
 
             if (rightFromCurrency == null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Finance",
-                    LogType = "Exception",
-                    Message = $"User hasn't currency {request.Transaction.FromCurrencyId}",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Exception",
+                        Message = $"User hasn't currency {request.Transaction.FromCurrencyId}",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.BadRequest, "You haven't this currency");
             }
@@ -100,19 +107,21 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
             await _repository.AddAsync(request.Transaction);
             await _repository.SaveChangesAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "Finance",
-                LogType = "Addition",
-                Message = $"User {request.Transaction.UserId} " +
-                $"created transaction {request.Transaction.Id}. " +
-                $"Bought {request.Transaction.NewCurrencyAmount} items of " +
-                $"{request.Transaction.NewCurrencyId} currency " +
-                $"for {request.Transaction.NewCurrencyPricePerUnit} $" +
-                $"from {request.Transaction.FromCurrencyId} currency.",
-                LogTime = DateTime.Now,
-            });
-
+            await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Addition",
+                        Message = $"User {request.Transaction.UserId} " +
+                        $"created transaction {request.Transaction.Id}. " +
+                        $"Bought {request.Transaction.NewCurrencyAmount} items of " +
+                        $"{request.Transaction.NewCurrencyId} currency " +
+                        $"for {request.Transaction.NewCurrencyPricePerUnit} $" +
+                        $"from {request.Transaction.FromCurrencyId} currency.",
+                        LogTime = DateTime.Now,
+                    }));
+           
             return Result.Ok(_mapper.Map<TransactionDto>(request.Transaction));
         }
 
@@ -137,13 +146,15 @@ namespace FinanceManagement.Data.Transactions.Commands.CreateTransaction
         {
             if (rightFromUserCurrency.CurrencyAmount <= rightFromCurrencyAmount)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "Finance",
-                    LogType = "Exception",
-                    Message = $"User {transaction.UserId} hasn't money for transaction",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.FinanceLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "Finance",
+                        LogType = "Exception",
+                        Message = $"User {transaction.UserId} hasn't money for transaction",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.BadRequest, "You haven't money for transaction");
             }

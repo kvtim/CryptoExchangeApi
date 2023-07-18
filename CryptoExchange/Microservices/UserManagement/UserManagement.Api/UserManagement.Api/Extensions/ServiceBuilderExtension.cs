@@ -55,6 +55,8 @@ namespace UserManagement.Api.Extensions
                 });
             });
 
+            services.AddScoped<IKafkaProducerService, KafkaProducerService>();
+
             services.AddEndpointsApiExplorer();
 
             services.ConfigureSwagger();

@@ -12,6 +12,8 @@ using UserManagement.Core.Dtos.User;
 using UserManagement.Core.ErrorHandling;
 using MassTransit;
 using EventBus.Messages.Events;
+using EventBus.Messages.Common;
+using System.Text.Json;
 
 namespace UserManagement.Services.Services
 {
@@ -21,21 +23,21 @@ namespace UserManagement.Services.Services
         private readonly IJWTTokenService _tokenService;
         private readonly IHasher _hasher;
         private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
         public RegistrationService(
             IUnitOfWork unitOfWork,
             IJWTTokenService tokenService,
             IHasher hasher,
             IMapper mapper,
-            IPublishEndpoint publishEndpoint
+            IKafkaProducerService kafkaProducerService
         )
         {
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _hasher = hasher;
             _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<Result<JWTToken>> Registration(RegisterUserDto registerUserDto)
@@ -44,13 +46,15 @@ namespace UserManagement.Services.Services
 
             if (user != null)
             {
-                await _publishEndpoint.Publish(new CreateNewLogEvent()
-                {
-                    Microservice = "User",
-                    LogType = "Exception",
-                    Message = $"User {registerUserDto.UserName} already exists.",
-                    LogTime = DateTime.Now
-                });
+                await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Exception",
+                        Message = $"User {registerUserDto.UserName} already exists.",
+                        LogTime = DateTime.Now
+                    }));
 
                 return Result.Failure(ErrorType.BadRequest, "User already exists");
             }
@@ -61,13 +65,15 @@ namespace UserManagement.Services.Services
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new CreateNewLogEvent()
-            {
-                Microservice = "User",
-                LogType = "Addition",
-                Message = $"User {user.Id} created account.",
-                LogTime = DateTime.Now
-            });
+            await _kafkaProducerService.SendMessage(
+                    TopicNamesConstants.UserLogsTopic,
+                    JsonSerializer.Serialize(new CreateNewLogEvent()
+                    {
+                        Microservice = "User",
+                        LogType = "Addition",
+                        Message = $"User {user.Id} created account.",
+                        LogTime = DateTime.Now
+                    }));
 
             return Result.Ok(await _tokenService.CreateToken(user));
         }
